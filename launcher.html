@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Phonics Games for Kids</title>
+  <meta name="description" content="Free phonics games for ages 3–8. Letter recognition to reading comprehension. No installation needed."/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
+      background:linear-gradient(135deg,#fef3c7 0%,#fcd34d 50%,#f59e0b 100%);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 12px 40px}
+
+    .header{text-align:center;margin-bottom:28px}
+    .header-badge{background:rgba(255,255,255,.3);color:#fff;font-size:.75rem;font-weight:bold;
+      letter-spacing:1px;padding:4px 14px;border-radius:20px;display:inline-block;margin-bottom:10px;
+      text-transform:uppercase}
+    .header h1{font-size:2.2rem;color:#fff;text-shadow:3px 3px 0 #92400e,5px 5px 0 rgba(0,0,0,.1);
+      letter-spacing:2px;margin-bottom:4px}
+    .header .tagline{color:rgba(255,255,255,.9);font-size:1rem}
+
+    .section-divider{width:100%;max-width:800px;margin:24px 0 16px;text-align:center}
+    .section-heading{font-size:1.3rem;color:#92400e;font-weight:bold;margin-bottom:4px}
+    .section-sub{color:#a16207;font-size:.82rem}
+    .section-badge{display:inline-block;background:rgba(255,255,255,.5);color:#92400e;font-size:.68rem;
+      font-weight:bold;letter-spacing:1px;padding:3px 12px;border-radius:20px;margin-bottom:8px;
+      text-transform:uppercase}
+
+    .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+      gap:16px;width:100%;max-width:800px}
+
+    .game-card{background:rgba(255,255,255,.96);border-radius:20px;
+      box-shadow:0 6px 20px rgba(0,0,0,.12),0 2px 6px rgba(0,0,0,.08);
+      overflow:hidden;display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease}
+    .game-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.16)}
+    .card-top{padding:22px 20px 14px;text-align:center;flex:1}
+    .card-emoji{font-size:3.2rem;display:block;margin-bottom:10px;line-height:1}
+    .card-title{font-size:1.2rem;font-weight:bold;color:#333;margin-bottom:6px}
+    .card-desc{font-size:.82rem;color:#777;line-height:1.5;margin-bottom:8px}
+    .card-chapter{font-size:.68rem;color:#aaa;font-style:italic}
+    .card-bottom{padding:12px 20px 16px}
+    .play-btn{display:block;width:100%;text-align:center;text-decoration:none;
+      border-radius:12px;padding:12px;font-family:inherit;font-size:1rem;font-weight:bold;
+      color:#fff;border:none;cursor:pointer;box-shadow:0 4px 0;transition:all .15s ease}
+    .play-btn:hover{transform:translateY(-2px)}
+    .play-btn:active{transform:translateY(3px)}
+
+    .card-gold  .play-btn{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 0 #92400e}
+    .card-amber .play-btn{background:linear-gradient(135deg,#fb923c,#ea580c);box-shadow:0 4px 0 #9a3412}
+    .card-sun   .play-btn{background:linear-gradient(135deg,#eab308,#a16207);box-shadow:0 4px 0 #713f12}
+    .card-coming .play-btn{background:#d1d5db;box-shadow:0 4px 0 #9ca3af;cursor:default;color:#6b7280}
+
+    .footer{margin-top:30px;text-align:center;color:rgba(255,255,255,.75);font-size:.75rem;line-height:1.8}
+    .footer a{color:rgba(255,255,255,.6);text-decoration:none}
+
+    @media(max-width:420px){
+      .header h1{font-size:1.7rem}
+      .games-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">Ages 3–8 · 78 Game Designs · Free</div>
+  <h1>🔤 Phonics Games</h1>
+  <p class="tagline">From letters to reading — learn through play</p>
+</div>
+
+<!-- SECTION 1: Letter Sounds -->
+<div class="section-divider">
+  <div class="section-badge">Section 1 · Ages 4–7</div>
+  <h2 class="section-heading">🎯 Letter Sounds</h2>
+  <p class="section-sub">Short vowels · Digraphs SH/CH/TH/WH · Consonant blends</p>
+</div>
+<div class="games-grid">
+
+  <div class="game-card card-gold">
+    <div class="card-top">
+      <span class="card-emoji">🎯</span>
+      <div class="card-title">Phonics Tap</div>
+      <div class="card-desc">Tap the missing sound to complete the word — beginning, middle, and ending sounds.</div>
+      <div class="card-chapter">Short vowels · Digraphs · Blends · 30 questions</div>
+    </div>
+    <div class="card-bottom">
+      <a class="play-btn" href="games/phonics.html">Play →</a>
+    </div>
+  </div>
+
+  <div class="game-card card-coming">
+    <div class="card-top">
+      <span class="card-emoji">🔜</span>
+      <div class="card-title">Long Vowel Magic</div>
+      <div class="card-desc">CVCe words and vowel teams — when the magic E makes vowels say their name.</div>
+      <div class="card-chapter">Coming soon</div>
+    </div>
+    <div class="card-bottom">
+      <button class="play-btn" disabled>Coming Soon</button>
+    </div>
+  </div>
+
+  <div class="game-card card-coming">
+    <div class="card-top">
+      <span class="card-emoji">🔜</span>
+      <div class="card-title">Digraph Detective</div>
+      <div class="card-desc">Hunt for SH, CH, TH, WH words hidden in scenes. Tap every one you find!</div>
+      <div class="card-chapter">Coming soon</div>
+    </div>
+    <div class="card-bottom">
+      <button class="play-btn" disabled>Coming Soon</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- SECTION 2: Rhyming & Word Families -->
+<div class="section-divider">
+  <div class="section-badge">Section 2 · Ages 3–6</div>
+  <h2 class="section-heading">🎵 Rhyming &amp; Word Families</h2>
+  <p class="section-sub">-AT, -AN, -IN, -OG, -ET and more onset-rime families</p>
+</div>
+<div class="games-grid">
+
+  <div class="game-card card-coming">
+    <div class="card-top">
+      <span class="card-emoji">🔜</span>
+      <div class="card-title">Rhyme Rocket</div>
+      <div class="card-desc">Launch the rocket by picking the word that rhymes. CAT rhymes with... HAT or DOG?</div>
+      <div class="card-chapter">Coming soon</div>
+    </div>
+    <div class="card-bottom">
+      <button class="play-btn" disabled>Coming Soon</button>
+    </div>
+  </div>
+
+  <div class="game-card card-coming">
+    <div class="card-top">
+      <span class="card-emoji">🔜</span>
+      <div class="card-title">Word Family Builder</div>
+      <div class="card-desc">Swap the beginning sound to build a whole family: CAT → BAT → SAT → HAT → MAT.</div>
+      <div class="card-chapter">Coming soon</div>
+    </div>
+    <div class="card-bottom">
+      <button class="play-btn" disabled>Coming Soon</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- SECTION 3: Sight Words -->
+<div class="section-divider">
+  <div class="section-badge">Section 3 · Ages 5–8</div>
+  <h2 class="section-heading">👁️ Sight Words</h2>
+  <p class="section-sub">High-frequency words by frequency tier</p>
+</div>
+<div class="games-grid">
+
+  <div class="game-card card-coming">
+    <div class="card-top">
+      <span class="card-emoji">🔜</span>
+      <div class="card-title">Sight Word Sprint</div>
+      <div class="card-desc">See it, say it, find it! Flash cards that train instant word recognition.</div>
+      <div class="card-chapter">Coming soon</div>
+    </div>
+    <div class="card-bottom">
+      <button class="play-btn" disabled>Coming Soon</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div>78 game designs · <a href="PHONICS_GAMES.md">View full catalog</a></div>
+  <div>Ages 3–8 · Letter recognition through reading comprehension</div>
+  <div style="margin-top:8px;color:rgba(255,255,255,.5);font-size:.7rem">
+    Designed by an early childhood educator, reading specialist, game designer, and child psychologist.
+  </div>
+</div>
+
+</body>
+</html>
