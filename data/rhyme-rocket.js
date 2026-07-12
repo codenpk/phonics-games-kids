@@ -25,5 +25,5 @@ window.RHYME_ROCKET = [
   {emoji:"🕐", word:"CLOCK", answer:{emoji:"🧦", word:"SOCK"},  distractors:[{emoji:"🐱",word:"CAT"}, {emoji:"📌",word:"PIN"}]},
   {emoji:"🐷", word:"PIG",   answer:{emoji:"🌿", word:"TWIG"},  distractors:[{emoji:"🐱",word:"CAT"}, {emoji:"☀️",word:"SUN"}]},
   {emoji:"🌊", word:"SEA",   answer:{emoji:"🐝", word:"BEE"},   distractors:[{emoji:"🚗",word:"CAR"}, {emoji:"📌",word:"PIN"}]},
-  {emoji:"🏃", word:"RUN",   answer:{emoji:"⭐", word:"SUN"},   distractors:[{emoji:"📌",word:"PIN"}, {emoji:"🚌",word:"BUS"}]},
+  {emoji:"🏃", word:"RUN",   answer:{emoji:"☀️", word:"SUN"},   distractors:[{emoji:"📌",word:"PIN"}, {emoji:"🚌",word:"BUS"}]},
 ];

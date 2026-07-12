@@ -19,7 +19,7 @@ window.SIGHT_WORDS = [
   {word:"look",   distractors:["took","book"]},
   {word:"make",   distractors:["lake","take"]},
   {word:"my",     distractors:["by","me"]},
-  {word:"not",    distractors:["now","not"]},
+  {word:"not",    distractors:["now","nod"]},
   {word:"play",   distractors:["clay","plan"]},
   {word:"red",    distractors:["led","read"]},
   {word:"run",    distractors:["sun","fun"]},

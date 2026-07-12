@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Gold background -->
+  <rect width="512" height="512" rx="80" fill="#f59e0b"/>
+  <!-- Left page -->
+  <rect x="70" y="138" width="174" height="236" rx="6" fill="white"/>
+  <!-- Right page -->
+  <rect x="268" y="138" width="174" height="236" rx="6" fill="white"/>
+  <!-- Spine -->
+  <rect x="240" y="130" width="32" height="252" rx="6" fill="white"/>
+  <!-- Left page ruled lines -->
+  <rect x="92"  y="196" width="130" height="11" rx="5" fill="#fde68a"/>
+  <rect x="92"  y="228" width="130" height="11" rx="5" fill="#fde68a"/>
+  <rect x="92"  y="260" width="130" height="11" rx="5" fill="#fde68a"/>
+  <rect x="92"  y="292" width="130" height="11" rx="5" fill="#fde68a"/>
+  <rect x="92"  y="324" width="96"  height="11" rx="5" fill="#fde68a"/>
+  <!-- Right page ruled lines -->
+  <rect x="290" y="196" width="130" height="11" rx="5" fill="#fde68a"/>
+  <rect x="290" y="228" width="130" height="11" rx="5" fill="#fde68a"/>
+  <rect x="290" y="260" width="130" height="11" rx="5" fill="#fde68a"/>
+  <rect x="290" y="292" width="130" height="11" rx="5" fill="#fde68a"/>
+  <rect x="290" y="324" width="96"  height="11" rx="5" fill="#fde68a"/>
+</svg>

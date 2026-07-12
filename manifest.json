@@ -1,0 +1,59 @@
+{
+  "name": "Phonics Games for Kids",
+  "short_name": "Phonics Games",
+  "description": "Free phonics games for ages 3–8. Letter recognition to reading comprehension. Works offline.",
+  "start_url": "/phonics-games-kids/launcher.html",
+  "scope": "/phonics-games-kids/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f59e0b",
+  "theme_color": "#d97706",
+  "lang": "en",
+  "categories": ["education", "kids"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Phonics Tap",
+      "url": "/phonics-games-kids/games/phonics.html",
+      "description": "Tap the missing sound"
+    },
+    {
+      "name": "Rhyme Rocket",
+      "url": "/phonics-games-kids/games/rhyme-rocket.html",
+      "description": "Pick the rhyming word"
+    },
+    {
+      "name": "Sight Word Flash",
+      "url": "/phonics-games-kids/games/sight-word-flash.html",
+      "description": "Flash word memory game"
+    },
+    {
+      "name": "Syllable Tap",
+      "url": "/phonics-games-kids/games/syllable-tap.html",
+      "description": "Count the syllables"
+    }
+  ]
+}

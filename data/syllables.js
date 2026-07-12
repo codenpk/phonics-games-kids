@@ -31,8 +31,8 @@ window.SYLLABLES = [
   {emoji:"☂️", word:"UMBRELLA",    syllables:3, split:"UM·BREL·LA"},
   {emoji:"🍌", word:"BANANA",      syllables:3, split:"BA·NA·NA"},
   {emoji:"🦘", word:"KANGAROO",    syllables:3, split:"KAN·GA·ROO"},
-  {emoji:"🍕", word:"HOSPITAL",    syllables:3, split:"HOS·PI·TAL"},
-  {emoji:"🎡", word:"REMEMBER",    syllables:3, split:"RE·MEM·BER"},
+  {emoji:"🏥", word:"HOSPITAL",    syllables:3, split:"HOS·PI·TAL"},
+  {emoji:"💭", word:"REMEMBER",    syllables:3, split:"RE·MEM·BER"},
 
   // 4 syllables
   {emoji:"🐛", word:"CATERPILLAR", syllables:4, split:"CAT·ER·PIL·LAR"},
