@@ -49,11 +49,10 @@
     .choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
     .choice-btn{border-radius:14px;border:3px solid transparent;cursor:pointer;font-family:inherit;
       background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;
-      box-shadow:0 5px 0 #4c1d95;transition:all .15s ease;padding:14px 6px;text-align:center}
+      box-shadow:0 5px 0 #4c1d95;transition:all .15s ease;padding:18px 6px;text-align:center;
+      font-size:1rem;font-weight:bold;letter-spacing:1px}
     .choice-btn:hover{transform:translateY(-2px)}
     .choice-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #4c1d95}
-    .choice-emoji{font-size:2rem;display:block;margin-bottom:4px;line-height:1}
-    .choice-word{font-size:.9rem;font-weight:bold;letter-spacing:1px;display:block}
     .choice-btn.correct{background:linear-gradient(135deg,#56ab2f,#38a169)!important;box-shadow:0 5px 0 #1c4532!important;cursor:default}
     .choice-btn.wrong{background:linear-gradient(135deg,#e53e3e,#c53030)!important;box-shadow:0 5px 0 #9b2c2c!important;cursor:default}
     .choice-btn:disabled{cursor:default}
@@ -191,7 +190,7 @@ function showQ(){
   opts.forEach(opt=>{
     const btn=document.createElement('button');
     btn.className='choice-btn';
-    btn.innerHTML=`<span class="choice-emoji">${opt.emoji}</span><span class="choice-word">${opt.word}</span>`;
+    btn.textContent=opt.word;
     btn.onclick=()=>choose(btn,opt,q);
     el.appendChild(btn);
   });
@@ -209,7 +208,7 @@ function choose(btn,opt,q){
   }else{
     btn.classList.add('wrong');
     document.querySelectorAll('.choice-btn').forEach(b=>{
-      if(b.querySelector('.choice-word').textContent===q.answer.word)b.classList.add('correct');
+      if(b.textContent===q.answer.word)b.classList.add('correct');
     });
     document.getElementById('statusMsg').textContent=`❌ ${q.word} rhymes with ${q.answer.word}`;
     soundWrong();
