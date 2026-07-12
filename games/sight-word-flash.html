@@ -171,7 +171,7 @@ function showQ(){
 
 function showChoices(q){
   document.getElementById('flashState').style.display='none';
-  document.getElementById('chooseState').style.display='';
+  document.getElementById('chooseState').style.display='block';
 
   const opts=shuffle([q.word,...q.distractors]);
   const el=document.getElementById('wordChoices');
@@ -206,7 +206,7 @@ function nextQ(){qi++;if(qi>=questions.length)showDone();else showQ();}
 
 function showDone(){
   document.getElementById('gameCard').style.display='none';
-  document.getElementById('doneScreen').style.display='';
+  document.getElementById('doneScreen').style.display='block';
   document.getElementById('progressFill').style.width='100%';
   document.getElementById('doneScore').textContent=`You scored ${score} out of ${questions.length*10} points!`;
   soundWin();confetti();

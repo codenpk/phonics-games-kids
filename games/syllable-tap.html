@@ -173,7 +173,7 @@ function nextQ(){qi++;if(qi>=questions.length)showDone();else showQ();}
 
 function showDone(){
   document.getElementById('gameCard').style.display='none';
-  document.getElementById('doneScreen').style.display='';
+  document.getElementById('doneScreen').style.display='block';
   document.getElementById('progressFill').style.width='100%';
   document.getElementById('doneScore').textContent=`You scored ${score} out of ${questions.length*10} points!`;
   soundWin();confetti();
