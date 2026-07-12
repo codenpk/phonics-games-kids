@@ -16,7 +16,7 @@
       font-size:.88rem;font-weight:bold;color:#555}
     .score-badge span{color:#7c3aed;font-size:1.05rem}
     h1{font-size:1.6rem;color:#fff;text-shadow:2px 2px 0 #4c1d95;margin-bottom:4px;letter-spacing:1px;text-align:center}
-    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center;min-height:1.2em}
     .progress-wrap{width:100%;max-width:580px;margin-bottom:12px}
     .progress-track{height:9px;background:rgba(255,255,255,.35);border-radius:5px;overflow:hidden}
     .progress-fill{height:100%;background:linear-gradient(90deg,#c4b5fd,#7c3aed);border-radius:5px;transition:width .4s ease;width:0%}
@@ -24,12 +24,28 @@
     .card{background:rgba(255,255,255,.97);border-radius:22px;padding:22px 18px 20px;
       box-shadow:0 8px 30px rgba(0,0,0,.13);width:100%;max-width:580px}
 
+    /* ── Difficulty picker ── */
+    #pickScreen{text-align:center}
+    .pick-heading{font-size:1.1rem;font-weight:bold;color:#5b21b6;margin-bottom:18px}
+    .pick-btns{display:flex;flex-direction:column;gap:12px}
+    .pick-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:inherit;
+      display:flex;align-items:center;gap:14px;text-align:left;transition:transform .12s ease,box-shadow .12s ease}
+    .pick-btn:hover{transform:translateY(-2px)}
+    .pick-btn:active{transform:translateY(2px)}
+    .pick-icon{font-size:1.8rem;line-height:1;flex-shrink:0}
+    .pick-info{flex:1}
+    .pick-name{font-size:1.05rem;font-weight:bold;display:block;margin-bottom:2px}
+    .pick-desc{font-size:.75rem;opacity:.8;display:block}
+    .btn-easy{background:linear-gradient(135deg,#d1fae5,#6ee7b7);color:#065f46;box-shadow:0 5px 0 #047857}
+    .btn-medium{background:linear-gradient(135deg,#ede9fe,#c4b5fd);color:#4c1d95;box-shadow:0 5px 0 #6d28d9}
+    .btn-hard{background:linear-gradient(135deg,#fce7f3,#f9a8d4);color:#831843;box-shadow:0 5px 0 #be185d}
+
+    /* ── Question ── */
     .prompt{text-align:center;font-size:.8rem;font-weight:bold;color:#7c3aed;
       text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
     .stimulus{text-align:center;margin-bottom:22px}
     .stim-emoji{font-size:4rem;display:block;line-height:1;margin-bottom:6px}
     .stim-word{font-size:1.8rem;font-weight:bold;color:#1f2937;letter-spacing:4px}
-
     .choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
     .choice-btn{border-radius:14px;border:3px solid transparent;cursor:pointer;font-family:inherit;
       background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;
@@ -41,7 +57,6 @@
     .choice-btn.correct{background:linear-gradient(135deg,#56ab2f,#38a169)!important;box-shadow:0 5px 0 #1c4532!important;cursor:default}
     .choice-btn.wrong{background:linear-gradient(135deg,#e53e3e,#c53030)!important;box-shadow:0 5px 0 #9b2c2c!important;cursor:default}
     .choice-btn:disabled{cursor:default}
-
     .status-msg{min-height:26px;text-align:center;font-size:.92rem;font-weight:bold;color:#5b21b6;margin-bottom:12px}
     .btn-next-wrap{text-align:center}
     .btn-next{background:linear-gradient(135deg,#f953c6,#b91d73);color:#fff;border:none;
@@ -50,10 +65,12 @@
     .btn-next:hover{transform:translateY(-2px)}
     .btn-next:active{transform:translateY(3px);box-shadow:0 2px 0 #8a0050}
 
+    /* ── Done screen ── */
     .done-screen{display:none;text-align:center}
     .done-emoji{font-size:4.5rem;display:block;margin-bottom:14px}
     .done-title{font-size:2rem;color:#5b21b6;font-weight:bold;margin-bottom:8px}
-    .done-score{font-size:1.1rem;color:#555;margin-bottom:20px}
+    .done-score{font-size:1.1rem;color:#555;margin-bottom:6px}
+    .done-level{font-size:.82rem;color:#6b7280;margin-bottom:20px}
     .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
     .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
     @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
@@ -65,13 +82,42 @@
   <div class="score-badge">⭐ <span id="score">0</span> pts</div>
 </div>
 <h1>🚀 Rhyme Rocket</h1>
-<p class="subtitle">Pick the word that rhymes!</p>
+<p class="subtitle" id="subtitle">Pick the word that rhymes!</p>
 <div class="progress-wrap">
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-  <div class="progress-label" id="progressLabel">Word 1 of ?</div>
+  <div class="progress-label" id="progressLabel"></div>
 </div>
 
-<div class="card" id="gameCard">
+<!-- Difficulty picker -->
+<div class="card" id="pickScreen">
+  <div class="pick-heading">Choose your level</div>
+  <div class="pick-btns">
+    <button class="pick-btn btn-easy" onclick="startGame('easy')">
+      <span class="pick-icon">⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Easy</span>
+        <span class="pick-desc">Simple CVC rhymes · cat/hat, sun/bun…</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-medium" onclick="startGame('medium')">
+      <span class="pick-icon">⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Medium</span>
+        <span class="pick-desc">Longer rhymes · moon/spoon, house/mouse…</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-hard" onclick="startGame('hard')">
+      <span class="pick-icon">⭐⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Hard</span>
+        <span class="pick-desc">Tricky distractors · bright/light, dream/cream…</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- Game card -->
+<div class="card" id="gameCard" style="display:none">
   <div class="prompt">Which word rhymes with...</div>
   <div class="stimulus">
     <span class="stim-emoji" id="stimEmoji"></span>
@@ -84,10 +130,12 @@
   </div>
 </div>
 
+<!-- Done screen -->
 <div class="card done-screen" id="doneScreen">
   <span class="done-emoji">🎉</span>
-  <div class="done-title">Amazing!</div>
+  <div class="done-title" id="doneTitle">Amazing!</div>
   <div class="done-score" id="doneScore"></div>
+  <div class="done-level" id="doneLevel"></div>
   <button class="btn-next" style="display:inline-block" onclick="restart()">Play Again 🔄</button>
   <br><a class="back-link" style="margin-top:14px;display:inline-block" href="../launcher.html">← All Games</a>
 </div>
@@ -104,14 +152,25 @@ function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i
 function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#7c3aed','#f953c6','#38a169','#f59e0b','#26c6da'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2200);}
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
 
-let questions=[],qi=0,score=0;
+const SETTINGS={
+  easy:  {tiers:[1],     limit:12, label:'⭐ Easy'},
+  medium:{tiers:[1,2],   limit:18, label:'⭐⭐ Medium'},
+  hard:  {tiers:[1,2,3], limit:24, label:'⭐⭐⭐ Hard'},
+};
 
-function start(){
-  questions=shuffle([...window.RHYME_ROCKET]);
+let difficulty='easy',questions=[],qi=0,score=0;
+
+function startGame(diff){
+  difficulty=diff;
+  const s=SETTINGS[diff];
+  const pool=window.RHYME_ROCKET.filter(q=>s.tiers.includes(q.tier??1));
+  questions=shuffle(pool).slice(0,s.limit);
   qi=0;score=0;
   document.getElementById('score').textContent='0';
-  document.getElementById('gameCard').style.display='';
+  document.getElementById('pickScreen').style.display='none';
+  document.getElementById('gameCard').style.display='block';
   document.getElementById('doneScreen').style.display='none';
+  document.getElementById('subtitle').textContent=`${s.label} — Pick the rhyme!`;
   showQ();
 }
 
@@ -124,7 +183,9 @@ function showQ(){
   document.getElementById('statusMsg').textContent='';
   document.getElementById('btnNext').style.display='none';
 
-  const opts=shuffle([q.answer,...q.distractors]);
+  // Hard mode uses hardDistractors (same first letter as answer — more confusable)
+  const distSet=(difficulty==='hard'&&q.hardDistractors)?q.hardDistractors:q.distractors;
+  const opts=shuffle([q.answer,...distSet]);
   const el=document.getElementById('choices');
   el.innerHTML='';
   opts.forEach(opt=>{
@@ -162,11 +223,23 @@ function showDone(){
   document.getElementById('gameCard').style.display='none';
   document.getElementById('doneScreen').style.display='block';
   document.getElementById('progressFill').style.width='100%';
-  document.getElementById('doneScore').textContent=`You scored ${score} out of ${questions.length*10} points!`;
+  const total=questions.length;
+  const pct=Math.round(score/total/10*100);
+  document.getElementById('doneScore').textContent=`You scored ${score} out of ${total*10} points (${pct}%)!`;
+  document.getElementById('doneLevel').textContent=`Level: ${SETTINGS[difficulty].label}`;
+  const title=pct>=90?'Amazing! 🌟':pct>=70?'Brilliant! 🎉':pct>=50?'Good job! 👍':'Keep practising! 💪';
+  document.getElementById('doneTitle').textContent=title;
   soundWin();confetti();
 }
-function restart(){start();}
-window.addEventListener('load',start);
+
+function restart(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('pickScreen').style.display='block';
+  document.getElementById('subtitle').textContent='Pick the word that rhymes!';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('progressLabel').textContent='';
+}
 </script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{});</script>
 </body>

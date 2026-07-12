@@ -2,7 +2,7 @@
 // Cache-first strategy: serve all static assets from cache; update in background.
 // Bump CACHE_VERSION when files change to force clients to refresh.
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `phonics-games-${CACHE_VERSION}`;
 
 const PRECACHE = [
