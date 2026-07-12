@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Word Match</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
+      background:linear-gradient(135deg,#ccfbf1 0%,#2dd4bf 50%,#0d9488 100%);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 10px 30px}
+    .top-bar{width:100%;max-width:560px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .back-link{background:rgba(255,255,255,.85);border:none;border-radius:20px;padding:6px 14px;
+      font-family:inherit;font-size:.85rem;font-weight:bold;color:#0f766e;cursor:pointer;text-decoration:none}
+    .score-badge{background:rgba(255,255,255,.88);border-radius:14px;padding:6px 16px;
+      font-size:.88rem;font-weight:bold;color:#555}
+    .score-badge span{color:#0d9488;font-size:1.05rem}
+    h1{font-size:1.55rem;color:#fff;text-shadow:2px 2px 0 #0f4c44;margin-bottom:4px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center;min-height:1.2em}
+    .progress-wrap{width:100%;max-width:560px;margin-bottom:12px}
+    .progress-track{height:9px;background:rgba(255,255,255,.35);border-radius:5px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#99f6e4,#0d9488);border-radius:5px;transition:width .4s ease;width:0%}
+    .progress-label{font-size:.7rem;color:rgba(255,255,255,.85);text-align:right;margin-top:2px}
+    .card{background:rgba(255,255,255,.97);border-radius:22px;padding:22px 18px 20px;
+      box-shadow:0 8px 30px rgba(0,0,0,.13);width:100%;max-width:560px}
+
+    /* Difficulty picker */
+    #pickScreen{text-align:center}
+    .pick-heading{font-size:1.1rem;font-weight:bold;color:#0f766e;margin-bottom:18px}
+    .pick-btns{display:flex;flex-direction:column;gap:12px}
+    .pick-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:inherit;
+      display:flex;align-items:center;gap:14px;text-align:left;transition:transform .12s ease}
+    .pick-btn:hover{transform:translateY(-2px)}
+    .pick-btn:active{transform:translateY(2px)}
+    .pick-icon{font-size:1.8rem;line-height:1;flex-shrink:0}
+    .pick-info{flex:1}
+    .pick-name{font-size:1.05rem;font-weight:bold;display:block;margin-bottom:2px}
+    .pick-desc{font-size:.75rem;opacity:.8;display:block}
+    .btn-easy{background:linear-gradient(135deg,#d1fae5,#6ee7b7);color:#065f46;box-shadow:0 5px 0 #047857}
+    .btn-medium{background:linear-gradient(135deg,#ccfbf1,#5eead4);color:#0f5950;box-shadow:0 5px 0 #0f766e}
+    .btn-hard{background:linear-gradient(135deg,#fce7f3,#f9a8d4);color:#831843;box-shadow:0 5px 0 #be185d}
+
+    /* Match grid */
+    .round-label{text-align:center;font-size:.78rem;font-weight:bold;color:#0f766e;
+      text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+    .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+    .match-col{display:flex;flex-direction:column;gap:8px}
+    .match-col-label{text-align:center;font-size:.7rem;font-weight:bold;color:#6b7280;
+      text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+    .word-btn,.pic-btn{border-radius:14px;border:3px solid transparent;cursor:pointer;font-family:inherit;
+      transition:all .15s ease;padding:14px 8px;text-align:center;width:100%}
+    .word-btn{background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;
+      box-shadow:0 5px 0 #0f4c44;font-size:1rem;font-weight:bold;letter-spacing:2px}
+    .pic-btn{background:linear-gradient(135deg,#2dd4bf,#0d9488);color:#fff;
+      box-shadow:0 5px 0 #0f766e;font-size:2.2rem;line-height:1}
+    .word-btn:hover,.pic-btn:hover{transform:translateY(-2px)}
+    .word-btn:active,.pic-btn:active{transform:translateY(3px)}
+    .word-btn.selected{border-color:#f59e0b;box-shadow:0 5px 0 #b45309;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+    .pic-btn.selected{border-color:#f59e0b;box-shadow:0 5px 0 #b45309;background:linear-gradient(135deg,#f59e0b,#d97706)}
+    .word-btn.matched,.pic-btn.matched{background:linear-gradient(135deg,#16a34a,#15803d)!important;
+      box-shadow:0 5px 0 #14532d!important;cursor:default;border-color:transparent!important}
+    .word-btn.shake,.pic-btn.shake{animation:shake .4s ease}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+    .word-btn:disabled,.pic-btn:disabled{cursor:default;opacity:.7}
+    .status-msg{min-height:26px;text-align:center;font-size:.92rem;font-weight:bold;color:#0f766e;margin-bottom:12px}
+    .btn-next-wrap{text-align:center}
+    .btn-next{background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;border:none;
+      border-radius:14px;padding:12px 30px;font-family:inherit;font-size:1rem;font-weight:bold;
+      cursor:pointer;box-shadow:0 5px 0 #0f4c44;transition:all .15s ease;display:none}
+    .btn-next:hover{transform:translateY(-2px)}
+    .btn-next:active{transform:translateY(3px);box-shadow:0 2px 0 #0f4c44}
+
+    /* Done screen */
+    .done-screen{display:none;text-align:center}
+    .done-emoji{font-size:4.5rem;display:block;margin-bottom:14px}
+    .done-title{font-size:2rem;color:#0f766e;font-weight:bold;margin-bottom:8px}
+    .done-score{font-size:1.1rem;color:#555;margin-bottom:6px}
+    .done-level{font-size:.82rem;color:#6b7280;margin-bottom:20px}
+    .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
+    .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <a class="back-link" href="../launcher.html">← All Games</a>
+  <div class="score-badge">⭐ <span id="score">0</span> pts</div>
+</div>
+<h1>🔗 Word Match</h1>
+<p class="subtitle" id="subtitle">Tap a word, then tap its picture!</p>
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel"></div>
+</div>
+
+<!-- Difficulty picker -->
+<div class="card" id="pickScreen">
+  <div class="pick-heading">Choose your level</div>
+  <div class="pick-btns">
+    <button class="pick-btn btn-easy" onclick="startGame('easy')">
+      <span class="pick-icon">⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Easy</span>
+        <span class="pick-desc">Short simple words · CAT, DOG, SUN…</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-medium" onclick="startGame('medium')">
+      <span class="pick-icon">⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Medium</span>
+        <span class="pick-desc">4–5 letter words · FROG, CAKE, MOON…</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-hard" onclick="startGame('hard')">
+      <span class="pick-icon">⭐⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Hard</span>
+        <span class="pick-desc">Long words · ELEPHANT, RAINBOW…</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- Game card -->
+<div class="card" id="gameCard" style="display:none">
+  <div class="round-label" id="roundLabel">Round 1</div>
+  <div class="match-grid">
+    <div>
+      <div class="match-col-label">Words</div>
+      <div class="match-col" id="wordCol"></div>
+    </div>
+    <div>
+      <div class="match-col-label">Pictures</div>
+      <div class="match-col" id="picCol"></div>
+    </div>
+  </div>
+  <div class="status-msg" id="statusMsg"></div>
+  <div class="btn-next-wrap">
+    <button class="btn-next" id="btnNext" onclick="nextRound()">Next Round ➡</button>
+  </div>
+</div>
+
+<!-- Done screen -->
+<div class="card done-screen" id="doneScreen">
+  <span class="done-emoji">🎉</span>
+  <div class="done-title" id="doneTitle">Amazing!</div>
+  <div class="done-score" id="doneScore"></div>
+  <div class="done-level" id="doneLevel"></div>
+  <button class="btn-next" style="display:inline-block" onclick="restart()">Play Again 🔄</button>
+  <br><a class="back-link" style="margin-top:14px;display:inline-block" href="../launcher.html">← All Games</a>
+</div>
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<script src="../data/word-match.js"></script>
+<script>
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function getAC(){if(!ac&&AC)ac=new AC();return ac;}
+function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=t;o.frequency.value=f;const s=ctx.currentTime+del;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.start(s);o.stop(s+d);}catch(e){}}
+function soundCorrect(){playTone(660,'sine',.12,.2);playTone(880,'sine',.12,.18,.1);}
+function soundWrong(){playTone(200,'sawtooth',.3,.12);}
+function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#0d9488','#2dd4bf','#f59e0b','#16a34a','#c026d3'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2200);}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+const SETTINGS={
+  easy:  {tiers:[1],     rounds:3, label:'⭐ Easy'},
+  medium:{tiers:[1,2],   rounds:4, label:'⭐⭐ Medium'},
+  hard:  {tiers:[1,2,3], rounds:5, label:'⭐⭐⭐ Hard'},
+};
+const PAIRS_PER_ROUND=4;
+
+let difficulty='easy',pool=[],totalRounds=3,currentRound=0,score=0;
+let selectedWord=null,selectedPic=null,matched=new Set();
+let roundPairs=[];
+
+function startGame(diff){
+  difficulty=diff;
+  const s=SETTINGS[diff];
+  pool=shuffle(window.WORD_MATCH.filter(q=>s.tiers.includes(q.tier??1)));
+  totalRounds=s.rounds;
+  currentRound=0;score=0;
+  document.getElementById('score').textContent='0';
+  document.getElementById('pickScreen').style.display='none';
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('subtitle').textContent=`${s.label} — Match 'em all!`;
+  nextRound();
+}
+
+function nextRound(){
+  currentRound++;
+  if(currentRound>totalRounds){showDone();return;}
+  matched=new Set();
+  selectedWord=null;selectedPic=null;
+  document.getElementById('btnNext').style.display='none';
+  document.getElementById('statusMsg').textContent='';
+  document.getElementById('roundLabel').textContent=`Round ${currentRound} of ${totalRounds}`;
+
+  const offset=(currentRound-1)*PAIRS_PER_ROUND;
+  roundPairs=pool.slice(offset%pool.length,(offset%pool.length)+PAIRS_PER_ROUND);
+  if(roundPairs.length<PAIRS_PER_ROUND)roundPairs=[...roundPairs,...pool.slice(0,PAIRS_PER_ROUND-roundPairs.length)];
+
+  const shuffledWords=shuffle([...roundPairs]);
+  const shuffledPics=shuffle([...roundPairs]);
+
+  updateProgress();
+  renderCols(shuffledWords,shuffledPics);
+}
+
+function updateProgress(){
+  const prog=(currentRound-1)/totalRounds;
+  document.getElementById('progressFill').style.width=Math.round(prog*100)+'%';
+  document.getElementById('progressLabel').textContent=`Round ${currentRound} of ${totalRounds}`;
+}
+
+function renderCols(words,pics){
+  const wc=document.getElementById('wordCol');
+  const pc=document.getElementById('picCol');
+  wc.innerHTML='';pc.innerHTML='';
+
+  words.forEach(pair=>{
+    const btn=document.createElement('button');
+    btn.className='word-btn';
+    btn.textContent=pair.word;
+    btn.dataset.word=pair.word;
+    btn.onclick=()=>selectWord(btn,pair.word);
+    wc.appendChild(btn);
+  });
+  pics.forEach(pair=>{
+    const btn=document.createElement('button');
+    btn.className='pic-btn';
+    btn.textContent=pair.emoji;
+    btn.dataset.word=pair.word;
+    btn.onclick=()=>selectPic(btn,pair.word);
+    pc.appendChild(btn);
+  });
+}
+
+function selectWord(btn,word){
+  if(matched.has(word)||btn.disabled)return;
+  document.querySelectorAll('.word-btn').forEach(b=>{if(!matched.has(b.dataset.word))b.classList.remove('selected');});
+  selectedWord={btn,word};
+  btn.classList.add('selected');
+  tryMatch();
+}
+
+function selectPic(btn,word){
+  if(matched.has(word)||btn.disabled)return;
+  document.querySelectorAll('.pic-btn').forEach(b=>{if(!matched.has(b.dataset.word))b.classList.remove('selected');});
+  selectedPic={btn,word};
+  btn.classList.add('selected');
+  tryMatch();
+}
+
+function tryMatch(){
+  if(!selectedWord||!selectedPic)return;
+  const sw=selectedWord,sp=selectedPic;
+  selectedWord=null;selectedPic=null;
+
+  if(sw.word===sp.word){
+    sw.btn.classList.remove('selected');sp.btn.classList.remove('selected');
+    sw.btn.classList.add('matched');sp.btn.classList.add('matched');
+    sw.btn.disabled=true;sp.btn.disabled=true;
+    matched.add(sw.word);
+    score+=10;
+    document.getElementById('score').textContent=score;
+    soundCorrect();
+    if(matched.size===roundPairs.length){
+      document.getElementById('statusMsg').textContent='🎉 Round complete!';
+      setTimeout(()=>{
+        if(currentRound>=totalRounds)showDone();
+        else document.getElementById('btnNext').style.display='inline-block';
+      },600);
+    }
+  }else{
+    sw.btn.classList.add('shake');sp.btn.classList.add('shake');
+    soundWrong();
+    setTimeout(()=>{
+      sw.btn.classList.remove('selected','shake');
+      sp.btn.classList.remove('selected','shake');
+    },450);
+  }
+}
+
+function showDone(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='block';
+  document.getElementById('progressFill').style.width='100%';
+  const total=totalRounds*PAIRS_PER_ROUND;
+  const pct=Math.round(score/total/10*100);
+  document.getElementById('doneScore').textContent=`You scored ${score} out of ${total*10} points (${pct}%)!`;
+  document.getElementById('doneLevel').textContent=`Level: ${SETTINGS[difficulty].label}`;
+  const title=pct>=90?'Amazing! 🌟':pct>=70?'Brilliant! 🎉':pct>=50?'Good job! 👍':'Keep practising! 💪';
+  document.getElementById('doneTitle').textContent=title;
+  soundWin();confetti();
+}
+
+function restart(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('pickScreen').style.display='block';
+  document.getElementById('subtitle').textContent='Tap a word, then tap its picture!';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('progressLabel').textContent='';
+}
+</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{});</script>
+</body>
+</html>
