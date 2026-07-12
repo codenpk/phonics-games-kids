@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Spell It</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
+      background:linear-gradient(135deg,#fff7ed 0%,#fdba74 50%,#ea580c 100%);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 10px 30px}
+    .top-bar{width:100%;max-width:580px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .back-link{background:rgba(255,255,255,.85);border:none;border-radius:20px;padding:6px 14px;
+      font-family:inherit;font-size:.85rem;font-weight:bold;color:#9a3412;cursor:pointer;text-decoration:none}
+    .score-badge{background:rgba(255,255,255,.88);border-radius:14px;padding:6px 16px;
+      font-size:.88rem;font-weight:bold;color:#555}
+    .score-badge span{color:#ea580c;font-size:1.05rem}
+    h1{font-size:1.6rem;color:#fff;text-shadow:2px 2px 0 #7c2d12;margin-bottom:4px;letter-spacing:1px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center;min-height:1.2em}
+    .progress-wrap{width:100%;max-width:580px;margin-bottom:12px}
+    .progress-track{height:9px;background:rgba(255,255,255,.35);border-radius:5px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#fdba74,#ea580c);border-radius:5px;transition:width .4s ease;width:0%}
+    .progress-label{font-size:.7rem;color:rgba(255,255,255,.85);text-align:right;margin-top:2px}
+    .card{background:rgba(255,255,255,.97);border-radius:22px;padding:22px 18px 20px;
+      box-shadow:0 8px 30px rgba(0,0,0,.13);width:100%;max-width:580px}
+
+    /* ── Difficulty picker ── */
+    #pickScreen{text-align:center}
+    .pick-heading{font-size:1.1rem;font-weight:bold;color:#9a3412;margin-bottom:18px}
+    .pick-btns{display:flex;flex-direction:column;gap:12px}
+    .pick-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:inherit;
+      display:flex;align-items:center;gap:14px;text-align:left;transition:transform .12s ease,box-shadow .12s ease}
+    .pick-btn:hover{transform:translateY(-2px)}
+    .pick-btn:active{transform:translateY(2px)}
+    .pick-icon{font-size:1.8rem;line-height:1;flex-shrink:0}
+    .pick-info{flex:1}
+    .pick-name{font-size:1.05rem;font-weight:bold;display:block;margin-bottom:2px}
+    .pick-desc{font-size:.75rem;opacity:.8;display:block}
+    .btn-easy{background:linear-gradient(135deg,#d1fae5,#6ee7b7);color:#065f46;box-shadow:0 5px 0 #047857}
+    .btn-medium{background:linear-gradient(135deg,#ede9fe,#c4b5fd);color:#4c1d95;box-shadow:0 5px 0 #6d28d9}
+    .btn-hard{background:linear-gradient(135deg,#fce7f3,#f9a8d4);color:#831843;box-shadow:0 5px 0 #be185d}
+
+    /* ── Game ── */
+    .word-emoji{font-size:5rem;display:block;text-align:center;line-height:1;margin-bottom:18px}
+    .letter-boxes{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+    .letter-box{width:44px;height:50px;border-radius:10px;border:3px solid #fdba74;
+      background:#fff7ed;display:flex;align-items:center;justify-content:center;
+      font-size:1.4rem;font-weight:bold;color:#ea580c;letter-spacing:0;
+      transition:all .2s ease}
+    .letter-box.filled{background:#fff;border-color:#ea580c}
+    .letter-box.correct{background:#d1fae5;border-color:#10b981;color:#065f46}
+    .letter-box.wrong{background:#fee2e2;border-color:#ef4444;color:#b91c1c;
+      animation:shake .5s ease}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+    .letter-tiles{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+    .letter-tile{width:46px;height:52px;border-radius:10px;border:none;cursor:pointer;font-family:inherit;
+      background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff;
+      font-size:1.3rem;font-weight:bold;box-shadow:0 5px 0 #7c2d12;
+      transition:all .15s ease}
+    .letter-tile:hover:not(.used){transform:translateY(-3px)}
+    .letter-tile:active:not(.used){transform:translateY(3px);box-shadow:0 2px 0 #7c2d12}
+    .letter-tile.used{opacity:.28;cursor:default;transform:none;box-shadow:0 5px 0 #7c2d12}
+
+    .controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px}
+    .btn-back{background:#f3f4f6;border:2px solid #e5e7eb;border-radius:10px;padding:10px 18px;
+      cursor:pointer;font-family:inherit;font-size:.95rem;font-weight:bold;color:#374151;
+      transition:all .15s ease}
+    .btn-back:hover{background:#e5e7eb}
+    .btn-back:active{transform:translateY(1px)}
+    .status-msg{min-height:26px;text-align:center;font-size:.92rem;font-weight:bold;
+      color:#9a3412;margin-bottom:10px}
+    .btn-next{background:linear-gradient(135deg,#f953c6,#b91d73);color:#fff;border:none;
+      border-radius:14px;padding:12px 30px;font-family:inherit;font-size:1rem;font-weight:bold;
+      cursor:pointer;box-shadow:0 5px 0 #8a0050;transition:all .15s ease;display:none}
+    .btn-next:hover{transform:translateY(-2px)}
+    .btn-next:active{transform:translateY(3px);box-shadow:0 2px 0 #8a0050}
+    .btn-next-wrap{text-align:center}
+
+    /* ── Done screen ── */
+    .done-screen{display:none;text-align:center}
+    .done-emoji{font-size:4.5rem;display:block;margin-bottom:14px}
+    .done-title{font-size:2rem;color:#9a3412;font-weight:bold;margin-bottom:8px}
+    .done-score{font-size:1.1rem;color:#555;margin-bottom:6px}
+    .done-level{font-size:.82rem;color:#6b7280;margin-bottom:20px}
+    .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
+    .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <a class="back-link" href="../launcher.html">← All Games</a>
+  <div class="score-badge">⭐ <span id="score">0</span> pts</div>
+</div>
+<h1>🔡 Spell It</h1>
+<p class="subtitle" id="subtitle">Tap the letters to spell the word!</p>
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel"></div>
+</div>
+
+<!-- Difficulty picker -->
+<div class="card" id="pickScreen">
+  <div class="pick-heading">Choose your level</div>
+  <div class="pick-btns">
+    <button class="pick-btn btn-easy" onclick="startGame('easy')">
+      <span class="pick-icon">⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Easy</span>
+        <span class="pick-desc">3-letter words · cat, dog, sun…</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-medium" onclick="startGame('medium')">
+      <span class="pick-icon">⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Medium</span>
+        <span class="pick-desc">4-5 letter words · frog, ship, drum…</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-hard" onclick="startGame('hard')">
+      <span class="pick-icon">⭐⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Hard</span>
+        <span class="pick-desc">5-7 letter words · night, brain, spoon…</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- Game card -->
+<div class="card" id="gameCard" style="display:none">
+  <span class="word-emoji" id="wordEmoji"></span>
+  <div class="letter-boxes" id="letterBoxes"></div>
+  <div class="letter-tiles" id="letterTiles"></div>
+  <div class="controls">
+    <button class="btn-back" onclick="backspace()">⌫ Back</button>
+  </div>
+  <div class="status-msg" id="statusMsg"></div>
+  <div class="btn-next-wrap">
+    <button class="btn-next" id="btnNext" onclick="nextQ()">Next ➡</button>
+  </div>
+</div>
+
+<!-- Done screen -->
+<div class="card done-screen" id="doneScreen">
+  <span class="done-emoji">🎉</span>
+  <div class="done-title" id="doneTitle">Amazing!</div>
+  <div class="done-score" id="doneScore"></div>
+  <div class="done-level" id="doneLevel"></div>
+  <button class="btn-next" style="display:inline-block" onclick="restart()">Play Again 🔄</button>
+  <br><a class="back-link" style="margin-top:14px;display:inline-block" href="../launcher.html">← All Games</a>
+</div>
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<script src="../data/spelling.js"></script>
+<script>
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function getAC(){if(!ac&&AC)ac=new AC();return ac;}
+function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=t;o.frequency.value=f;const s=ctx.currentTime+del;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.start(s);o.stop(s+d);}catch(e){}}
+function soundTap(){playTone(500,'sine',.06,.12);}
+function soundCorrect(){playTone(880,'sine',.15,.2);playTone(1100,'sine',.15,.18,.1);}
+function soundWrong(){playTone(200,'sawtooth',.3,.12);}
+function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#ea580c','#f953c6','#38a169','#f59e0b','#7c3aed'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2200);}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+const SETTINGS={
+  easy:  {tiers:[1],     limit:12, label:'⭐ Easy'},
+  medium:{tiers:[1,2],   limit:16, label:'⭐⭐ Medium'},
+  hard:  {tiers:[1,2,3], limit:20, label:'⭐⭐⭐ Hard'},
+};
+
+let difficulty='easy',questions=[],qi=0,score=0;
+let shuffledTiles=[],filledIndices=[];
+
+function startGame(diff){
+  difficulty=diff;
+  const s=SETTINGS[diff];
+  const pool=window.SPELLING.filter(q=>s.tiers.includes(q.tier??1));
+  questions=shuffle(pool).slice(0,s.limit);
+  qi=0;score=0;
+  document.getElementById('score').textContent='0';
+  document.getElementById('pickScreen').style.display='none';
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('subtitle').textContent=`${s.label} — Tap to spell!`;
+  showQ();
+}
+
+function showQ(){
+  const q=questions[qi];
+  document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
+  document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
+  document.getElementById('wordEmoji').textContent=q.emoji;
+  document.getElementById('statusMsg').textContent='';
+  document.getElementById('btnNext').style.display='none';
+
+  // Build letter boxes
+  const boxEl=document.getElementById('letterBoxes');
+  boxEl.innerHTML='';
+  for(let i=0;i<q.word.length;i++){
+    const b=document.createElement('div');
+    b.className='letter-box';
+    b.id=`box${i}`;
+    boxEl.appendChild(b);
+  }
+
+  // Build shuffled letter tiles (keep duplicates)
+  shuffledTiles=shuffle(q.word.split('')).map((letter,i)=>({letter,used:false,idx:i,el:null}));
+  filledIndices=[];
+  const tileEl=document.getElementById('letterTiles');
+  tileEl.innerHTML='';
+  shuffledTiles.forEach((tile,i)=>{
+    const btn=document.createElement('button');
+    btn.className='letter-tile';
+    btn.textContent=tile.letter;
+    btn.onclick=()=>tapTile(i,q);
+    tile.el=btn;
+    tileEl.appendChild(btn);
+  });
+}
+
+function tapTile(idx,q){
+  if(shuffledTiles[idx].used)return;
+  shuffledTiles[idx].used=true;
+  shuffledTiles[idx].el.classList.add('used');
+  filledIndices.push(idx);
+  soundTap();
+
+  const boxIdx=filledIndices.length-1;
+  const box=document.getElementById(`box${boxIdx}`);
+  box.textContent=shuffledTiles[idx].letter;
+  box.classList.add('filled');
+
+  if(filledIndices.length===q.word.length) checkAnswer(q);
+}
+
+function backspace(){
+  if(filledIndices.length===0)return;
+  const lastIdx=filledIndices.pop();
+  shuffledTiles[lastIdx].used=false;
+  shuffledTiles[lastIdx].el.classList.remove('used');
+  const box=document.getElementById(`box${filledIndices.length}`);
+  box.textContent='';
+  box.classList.remove('filled','correct','wrong');
+}
+
+function checkAnswer(q){
+  const typed=filledIndices.map(i=>shuffledTiles[i].letter).join('');
+  document.querySelectorAll('.letter-tile').forEach(b=>b.disabled=true);
+  if(typed===q.word){
+    document.querySelectorAll('.letter-box').forEach(b=>b.classList.add('correct'));
+    score+=10;
+    document.getElementById('score').textContent=score;
+    document.getElementById('statusMsg').textContent=`✅ ${q.word}!`;
+    soundCorrect();
+    setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',700);
+  }else{
+    document.querySelectorAll('.letter-box').forEach(b=>b.classList.add('wrong'));
+    soundWrong();
+    setTimeout(()=>resetInput(q),800);
+  }
+}
+
+function resetInput(q){
+  filledIndices=[];
+  shuffledTiles.forEach(tile=>{tile.used=false;tile.el.classList.remove('used');tile.el.disabled=false;});
+  for(let i=0;i<q.word.length;i++){
+    const b=document.getElementById(`box${i}`);
+    b.textContent='';
+    b.className='letter-box';
+  }
+  document.getElementById('statusMsg').textContent='Try again!';
+}
+
+function nextQ(){qi++;if(qi>=questions.length)showDone();else showQ();}
+
+function showDone(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='block';
+  document.getElementById('progressFill').style.width='100%';
+  const total=questions.length;
+  const pct=Math.round(score/total/10*100);
+  document.getElementById('doneScore').textContent=`You scored ${score} out of ${total*10} points (${pct}%)!`;
+  document.getElementById('doneLevel').textContent=`Level: ${SETTINGS[difficulty].label}`;
+  const title=pct>=90?'Amazing! 🌟':pct>=70?'Brilliant! 🎉':pct>=50?'Good job! 👍':'Keep practising! 💪';
+  document.getElementById('doneTitle').textContent=title;
+  soundWin();confetti();
+}
+
+function restart(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('pickScreen').style.display='block';
+  document.getElementById('subtitle').textContent='Tap the letters to spell the word!';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('progressLabel').textContent='';
+}
+</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{});</script>
+</body>
+</html>

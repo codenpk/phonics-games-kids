@@ -1,0 +1,55 @@
+// Spell It — word bank
+// tier: 1=3-letter CVC  2=4-5 letter with blends/digraphs  3=5-7 letter harder words
+window.SPELLING = [
+
+  // ── Tier 1: 3-letter CVC ─────────────────────────────────────────────────
+  {tier:1, emoji:"🐱", word:"CAT"},
+  {tier:1, emoji:"🐶", word:"DOG"},
+  {tier:1, emoji:"☀️",  word:"SUN"},
+  {tier:1, emoji:"🐛", word:"BUG"},
+  {tier:1, emoji:"🐷", word:"PIG"},
+  {tier:1, emoji:"☕", word:"CUP"},
+  {tier:1, emoji:"🐸", word:"HOP"},
+  {tier:1, emoji:"🕸️", word:"NET"},
+  {tier:1, emoji:"🛏️", word:"BED"},
+  {tier:1, emoji:"🏃", word:"RUN"},
+  {tier:1, emoji:"✈️", word:"JET"},
+  {tier:1, emoji:"🧹", word:"MOP"},
+  {tier:1, emoji:"📌", word:"PIN"},
+  {tier:1, emoji:"🐔", word:"HEN"},
+  {tier:1, emoji:"🌀", word:"FAN"},
+
+  // ── Tier 2: 4-5 letter with blends/digraphs ──────────────────────────────
+  {tier:2, emoji:"🐸", word:"FROG"},
+  {tier:2, emoji:"🚢", word:"SHIP"},
+  {tier:2, emoji:"🥁", word:"DRUM"},
+  {tier:2, emoji:"💬", word:"CHAT"},
+  {tier:2, emoji:"🔌", word:"PLUG"},
+  {tier:2, emoji:"👣", word:"STEP"},
+  {tier:2, emoji:"🚩", word:"FLAG"},
+  {tier:2, emoji:"✂️", word:"SNIP"},
+  {tier:2, emoji:"🦀", word:"CRAB"},
+  {tier:2, emoji:"🍑", word:"PLUM"},
+  {tier:2, emoji:"🐌", word:"SLUG"},
+  {tier:2, emoji:"🍟", word:"CHIP"},
+  {tier:2, emoji:"💧", word:"DRIP"},
+  {tier:2, emoji:"😁", word:"GRIN"},
+  {tier:2, emoji:"🤸", word:"FLIP"},
+
+  // ── Tier 3: 5-7 letter harder words ──────────────────────────────────────
+  {tier:3, emoji:"🌙", word:"NIGHT"},
+  {tier:3, emoji:"💡", word:"LIGHT"},
+  {tier:3, emoji:"🍦", word:"CREAM"},
+  {tier:3, emoji:"🚂", word:"TRAIN"},
+  {tier:3, emoji:"🏖️", word:"BEACH"},
+  {tier:3, emoji:"☁️", word:"CLOUD"},
+  {tier:3, emoji:"🥄", word:"SPOON"},
+  {tier:3, emoji:"🪑", word:"CHAIR"},
+  {tier:3, emoji:"🧠", word:"BRAIN"},
+  {tier:3, emoji:"📣", word:"SHOUT"},
+  {tier:3, emoji:"🌿", word:"PLANT"},
+  {tier:3, emoji:"🍬", word:"SWEET"},
+  {tier:3, emoji:"👄", word:"MOUTH"},
+  {tier:3, emoji:"🌊", word:"OCEAN"},
+  {tier:3, emoji:"👑", word:"CROWN"},
+];
