@@ -33,7 +33,7 @@ window.SYLLABLES = [
   {tier:2, emoji:"🎈", word:"BIRTHDAY",    syllables:2, split:"BIRTH·DAY"},
   {tier:2, emoji:"🌈", word:"RAINBOW",     syllables:2, split:"RAIN·BOW"},
   {tier:2, emoji:"✏️", word:"PENCIL",      syllables:2, split:"PEN·CIL"},
-  {tier:2, emoji:"🌙", word:"FINGER",      syllables:2, split:"FIN·GER"},
+  {tier:2, emoji:"☝️", word:"FINGER",      syllables:2, split:"FIN·GER"},
   {tier:2, emoji:"🌊", word:"OCEAN",       syllables:2, split:"O·CEAN"},
   {tier:2, emoji:"🎵", word:"MUSIC",       syllables:2, split:"MU·SIC"},
 
