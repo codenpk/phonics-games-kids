@@ -192,7 +192,7 @@ let difficulty='easy',questions=[],qi=0,score=0;
 function startGame(diff){
   difficulty=diff;
   const s=SETTINGS[diff];
-  const pool=window.PHONICS.filter(q=>s.tiers.includes(q.tier));
+  const pool=window.PHONICS.filter(q=>s.tiers.includes(q.tier??1));
   questions=shuffle(pool).slice(0,s.limit);
   qi=0;score=0;
   document.getElementById('score').textContent='0';
