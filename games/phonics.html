@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Phonics Tap — Grade 1</title>
+  <title>Phonics Tap</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
@@ -16,7 +16,7 @@
       font-size:.88rem;font-weight:bold;color:#555}
     .score-badge span{color:#d97706;font-size:1.05rem}
     h1{font-size:1.6rem;color:#fff;text-shadow:2px 2px 0 #92400e;margin-bottom:4px;letter-spacing:1px;text-align:center}
-    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center;min-height:1.2em}
     .progress-wrap{width:100%;max-width:580px;margin-bottom:12px}
     .progress-track{height:9px;background:rgba(255,255,255,.35);border-radius:5px;overflow:hidden}
     .progress-fill{height:100%;background:linear-gradient(90deg,#d97706,#92400e);border-radius:5px;transition:width .4s ease;width:0%}
@@ -24,10 +24,27 @@
     .card{background:rgba(255,255,255,.96);border-radius:22px;padding:22px 18px 20px;
       box-shadow:0 8px 30px rgba(0,0,0,.12);width:100%;max-width:580px}
 
-    /* ── Emoji & position label ── */
+    /* ── Difficulty picker ── */
+    #pickScreen{text-align:center}
+    .pick-heading{font-size:1.1rem;font-weight:bold;color:#92400e;margin-bottom:18px}
+    .pick-btns{display:flex;flex-direction:column;gap:12px}
+    .pick-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:inherit;
+      display:flex;align-items:center;gap:14px;text-align:left;transition:transform .12s ease,box-shadow .12s ease}
+    .pick-btn:hover{transform:translateY(-2px)}
+    .pick-btn:active{transform:translateY(2px)}
+    .pick-icon{font-size:1.8rem;line-height:1;flex-shrink:0}
+    .pick-info{flex:1}
+    .pick-name{font-size:1.05rem;font-weight:bold;display:block;margin-bottom:2px}
+    .pick-desc{font-size:.75rem;opacity:.8;display:block}
+    .btn-easy{background:linear-gradient(135deg,#d1fae5,#6ee7b7);color:#065f46;box-shadow:0 5px 0 #047857}
+    .btn-medium{background:linear-gradient(135deg,#fef3c7,#fcd34d);color:#92400e;box-shadow:0 5px 0 #d97706}
+    .btn-hard{background:linear-gradient(135deg,#ede9fe,#c4b5fd);color:#4c1d95;box-shadow:0 5px 0 #6d28d9}
+
+    /* ── Question card ── */
     .q-emoji{font-size:3.8rem;display:block;text-align:center;margin-bottom:6px;line-height:1}
     .pos-label{text-align:center;font-size:.75rem;font-weight:bold;letter-spacing:1px;
       color:#d97706;text-transform:uppercase;margin-bottom:14px}
+    .pattern-tag{font-size:.65rem;color:#aaa;font-style:italic;text-align:center;margin-bottom:14px}
 
     /* ── Word display tiles ── */
     .word-display{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
@@ -45,37 +62,36 @@
 
     /* ── Choice buttons ── */
     .choices{display:flex;gap:12px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
-    .choice-btn{min-width:80px;padding:14px 18px;border-radius:14px;border:none;cursor:pointer;
-      font-family:inherit;font-size:1.3rem;font-weight:bold;
+    .choice-btn{min-width:72px;padding:14px 16px;border-radius:14px;border:none;cursor:pointer;
+      font-family:inherit;font-size:1.2rem;font-weight:bold;
       background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;
       box-shadow:0 5px 0 #92400e;transition:all .15s ease;letter-spacing:1px}
     .choice-btn:hover{transform:translateY(-2px)}
     .choice-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #92400e}
-    .choice-btn.correct{background:linear-gradient(135deg,#56ab2f,#38a169) !important;
-      box-shadow:0 5px 0 #1c4532 !important;cursor:default;transform:none}
-    .choice-btn.wrong{background:linear-gradient(135deg,#e53e3e,#c53030) !important;
-      box-shadow:0 5px 0 #9b2c2c !important;cursor:default}
+    .choice-btn.correct{background:linear-gradient(135deg,#56ab2f,#38a169)!important;
+      box-shadow:0 5px 0 #1c4532!important;cursor:default;transform:none}
+    .choice-btn.wrong{background:linear-gradient(135deg,#e53e3e,#c53030)!important;
+      box-shadow:0 5px 0 #9b2c2c!important;cursor:default}
     .choice-btn:disabled{cursor:default}
 
     .status-msg{min-height:26px;text-align:center;font-size:.95rem;font-weight:bold;
       color:#92400e;margin-bottom:12px}
+    .btn-next-wrap{text-align:center}
     .btn-next{background:linear-gradient(135deg,#f953c6,#b91d73);color:#fff;border:none;
       border-radius:14px;padding:12px 30px;font-family:inherit;font-size:1rem;font-weight:bold;
-      cursor:pointer;box-shadow:0 5px 0 #8a0050;transition:all .15s ease;display:none;
-      margin:0 auto;display:none}
+      cursor:pointer;box-shadow:0 5px 0 #8a0050;transition:all .15s ease;display:none}
     .btn-next:hover{transform:translateY(-2px)}
-    .btn-next-wrap{text-align:center}
-    .chapter-tag{font-size:.65rem;color:#aaa;font-style:italic;text-align:center;margin-bottom:14px}
+    .btn-next:active{transform:translateY(3px);box-shadow:0 2px 0 #8a0050}
 
     /* ── Done screen ── */
     .done-screen{display:none;text-align:center}
     .done-emoji{font-size:4.5rem;display:block;margin-bottom:14px}
     .done-title{font-size:2rem;color:#92400e;font-weight:bold;margin-bottom:8px}
-    .done-score{font-size:1.1rem;color:#555;margin-bottom:20px}
+    .done-score{font-size:1.1rem;color:#555;margin-bottom:6px}
+    .done-level{font-size:.82rem;color:#6b7280;margin-bottom:20px}
     .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
     .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
     @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
-    @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
   </style>
 </head>
 <body>
@@ -84,17 +100,46 @@
   <div class="score-badge">⭐ <span id="score">0</span> pts</div>
 </div>
 <h1>🎯 Phonics Tap</h1>
-<p class="subtitle">Tap the missing sound to complete the word</p>
+<p class="subtitle" id="subtitle">Tap the missing sound to complete the word</p>
 <div class="progress-wrap">
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-  <div class="progress-label" id="progressLabel">Word 1 of ?</div>
+  <div class="progress-label" id="progressLabel"></div>
 </div>
 
-<div class="card" id="gameCard">
+<!-- Difficulty picker -->
+<div class="card" id="pickScreen">
+  <div class="pick-heading">Choose your level</div>
+  <div class="pick-btns">
+    <button class="pick-btn btn-easy" onclick="startGame('easy')">
+      <span class="pick-icon">⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Easy</span>
+        <span class="pick-desc">Short vowels · CVC words (cat, dog, sun…)</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-medium" onclick="startGame('medium')">
+      <span class="pick-icon">⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Medium</span>
+        <span class="pick-desc">Digraphs + blends (sh, ch, tr, fl, st…)</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-hard" onclick="startGame('hard')">
+      <span class="pick-icon">⭐⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Hard</span>
+        <span class="pick-desc">Long vowels · vowel teams · r-controlled (ai, ee, ar, or…)</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- Game card -->
+<div class="card" id="gameCard" style="display:none">
   <span class="q-emoji" id="qEmoji">❓</span>
   <div class="pos-label" id="posLabel"></div>
   <div class="word-display" id="wordDisplay"></div>
-  <div class="chapter-tag" id="chapterTag"></div>
+  <div class="pattern-tag" id="patternTag"></div>
   <div class="choices" id="choices"></div>
   <div class="status-msg" id="statusMsg"></div>
   <div class="btn-next-wrap">
@@ -102,10 +147,12 @@
   </div>
 </div>
 
+<!-- Done screen -->
 <div class="card done-screen" id="doneScreen">
   <span class="done-emoji">🎉</span>
-  <div class="done-title">Brilliant!</div>
+  <div class="done-title" id="doneTitle">Brilliant!</div>
   <div class="done-score" id="doneScore"></div>
+  <div class="done-level" id="doneLevel"></div>
   <button class="btn-next" style="display:inline-block" onclick="restart()">Play Again 🔄</button>
   <br><a class="back-link" style="margin-top:14px;display:inline-block" href="../launcher.html">← All Games</a>
 </div>
@@ -113,7 +160,6 @@
 
 <script src="../data/phonics.js"></script>
 <script>
-// ── Audio ──────────────────────────────────────────────────────────────────
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
 function getAC(){if(!ac&&AC)ac=new AC();return ac;}
 function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=t;o.frequency.value=f;const s=ctx.currentTime+del;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.start(s);o.stop(s+d);}catch(e){}}
@@ -123,29 +169,47 @@ function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i
 function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#f59e0b','#f953c6','#38a169','#667eea','#26c6da'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2000);}
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
 
-// ── State ──────────────────────────────────────────────────────────────────
-let questions=[],qi=0,score=0;
+const SETTINGS={
+  easy:  {tiers:[1],     limit:15, label:'⭐ Easy'},
+  medium:{tiers:[1,2],   limit:20, label:'⭐⭐ Medium'},
+  hard:  {tiers:[1,2,3], limit:25, label:'⭐⭐⭐ Hard'},
+};
 
-function start(){
-  questions=shuffle([...window.PHONICS]);
+const POS_LABEL={
+  beginning:'What is the BEGINNING sound?',
+  middle:   'What is the MIDDLE sound?',
+  end:      'What is the ENDING sound?',
+};
+
+const PATTERN_LABEL={
+  1: 'Short vowels (CVC)',
+  2: 'Digraphs & blends',
+  3: 'Long vowels & vowel teams',
+};
+
+let difficulty='easy',questions=[],qi=0,score=0;
+
+function startGame(diff){
+  difficulty=diff;
+  const s=SETTINGS[diff];
+  const pool=window.PHONICS.filter(q=>s.tiers.includes(q.tier));
+  questions=shuffle(pool).slice(0,s.limit);
   qi=0;score=0;
   document.getElementById('score').textContent='0';
-  document.getElementById('gameCard').style.display='';
+  document.getElementById('pickScreen').style.display='none';
+  document.getElementById('gameCard').style.display='block';
   document.getElementById('doneScreen').style.display='none';
+  document.getElementById('subtitle').textContent=`${s.label} — Tap the missing sound!`;
   showQ();
 }
 
-// ── Build word tiles ───────────────────────────────────────────────────────
 function buildTiles(display,filledAnswer,result){
-  // display e.g. "_AT", "H_T", "CA_", "__IP", "FI__"
-  // Split display into segments: each char or __ block
   const segments=[];
   let i=0;
   while(i<display.length){
     if(display[i]==='_'){
       let j=i;while(j<display.length&&display[j]==='_')j++;
-      segments.push({type:'blank',len:j-i});
-      i=j;
+      segments.push({type:'blank',len:j-i});i=j;
     }else{
       segments.push({type:'letter',char:display[i]});i++;
     }
@@ -170,23 +234,20 @@ function buildTiles(display,filledAnswer,result){
   });
 }
 
-// ── Show question ──────────────────────────────────────────────────────────
 function showQ(){
   const q=questions[qi];
-  const pct=Math.round(qi/questions.length*100);
-  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
   document.getElementById('qEmoji').textContent=q.emoji;
   document.getElementById('statusMsg').textContent='';
   document.getElementById('btnNext').style.display='none';
-
-  const posText={beginning:'What is the BEGINNING sound?',middle:'What is the MIDDLE sound?',end:'What is the ENDING sound?'};
-  document.getElementById('posLabel').textContent=posText[q.position]||'';
-
+  document.getElementById('posLabel').textContent=POS_LABEL[q.position]||'';
+  document.getElementById('patternTag').textContent=PATTERN_LABEL[q.tier]||'';
   buildTiles(q.display,null,null);
 
-  // Build choices
-  const opts=shuffle([q.answer,...q.distractors]);
+  // Hard mode uses the harder distractor set when available
+  const distSet=(difficulty==='hard'&&q.hard)?q.hard:q.distractors;
+  const opts=shuffle([q.answer,...distSet]);
   const choicesEl=document.getElementById('choices');
   choicesEl.innerHTML='';
   opts.forEach(opt=>{
@@ -198,7 +259,6 @@ function showQ(){
   });
 }
 
-// ── Handle answer ──────────────────────────────────────────────────────────
 function choose(btn,opt,q){
   document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
   if(opt===q.answer){
@@ -215,20 +275,32 @@ function choose(btn,opt,q){
     document.getElementById('statusMsg').textContent='❌ The answer is '+q.answer;
     soundWrong();
   }
-  setTimeout(()=>{document.getElementById('btnNext').style.display='inline-block';},900);
+  setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);
 }
 
-function nextQ(){qi++;if(qi>=questions.length){showDone();}else{showQ();}}
+function nextQ(){qi++;if(qi>=questions.length)showDone();else showQ();}
 
 function showDone(){
   document.getElementById('gameCard').style.display='none';
   document.getElementById('doneScreen').style.display='block';
   document.getElementById('progressFill').style.width='100%';
-  document.getElementById('doneScore').textContent=`You scored ${score} out of ${questions.length*10} points!`;
+  const total=questions.length;
+  const pct=Math.round(score/total/10*100);
+  document.getElementById('doneScore').textContent=`You scored ${score} out of ${total*10} points (${pct}%)!`;
+  document.getElementById('doneLevel').textContent=`Level: ${SETTINGS[difficulty].label}`;
+  const title=pct>=90?'Amazing! 🌟':pct>=70?'Brilliant! 🎉':pct>=50?'Good job! 👍':'Keep practising! 💪';
+  document.getElementById('doneTitle').textContent=title;
   soundWin();confetti();
 }
-function restart(){start();}
-window.addEventListener('load',start);
+
+function restart(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('pickScreen').style.display='block';
+  document.getElementById('subtitle').textContent='Tap the missing sound to complete the word';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('progressLabel').textContent='';
+}
 </script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{});</script>
 </body>
