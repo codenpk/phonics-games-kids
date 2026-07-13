@@ -80,9 +80,10 @@
     .game-info-row{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;color:#374151;line-height:1.45;margin-bottom:8px}
     .game-info-row:last-child{margin-bottom:0}
     .game-info-icon{font-size:1rem;flex-shrink:0;width:1.2em;text-align:center}
-    .speak-btn{background:rgba(0,0,0,.08);border:none;border-radius:50%;width:38px;height:38px;font-size:1.2rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;vertical-align:middle;margin-left:10px}
+    .speak-btn{background:rgba(0,0,0,.08);border:none;border-radius:50%;width:30px;height:30px;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:4px auto 0;transition:all .15s}
     .speak-btn:hover{background:rgba(0,0,0,.15);transform:scale(1.1)}
     .speak-btn:active{transform:scale(.88)}
+    #speakAllBtn{width:auto;height:auto;border-radius:20px;padding:6px 14px;font-size:.82rem;display:inline-flex;gap:5px;margin:8px auto 0}
     .game-info-text b{color:#111}
   </style>
 </head>
@@ -226,7 +227,7 @@ function showQ(){
   opts.forEach(opt=>{
     const btn=document.createElement('button');
     btn.className='choice-btn';
-    btn.innerHTML=`<span class="choice-emoji">${opt.emoji}</span><span class="choice-word">${opt.word}</span><button class="speak-btn" style="margin:4px auto 0;display:block;font-size:.9rem;width:30px;height:30px" aria-label="Hear ${opt.word}" onclick="event.stopPropagation();speak('${opt.word}')">🔊</button>`;
+    btn.innerHTML=`<span class="choice-emoji">${opt.emoji}</span><span class="choice-word">${opt.word}</span><span role="button" tabindex="0" class="speak-btn" aria-label="Hear ${opt.word}" onclick="event.stopPropagation();speak('${opt.word}')">🔊</span>`;
     btn.onclick=()=>choose(btn,opt,q);
     el.appendChild(btn);
   });
