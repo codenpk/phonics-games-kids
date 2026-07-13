@@ -229,7 +229,7 @@ function choose(btn,vowel){
   }else{
     btn.classList.add('wrong');
     document.getElementById(`vol-${q.vowel}`).classList.add('correct');
-    document.getElementById('statusMsg').textContent=`❌ ${q.word} has a short ${q.vowel} — like in ${q.word}`;
+    document.getElementById('statusMsg').textContent=`❌ The vowel in ${q.word} is ${q.vowel}!`;
     soundWrong();
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);
