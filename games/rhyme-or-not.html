@@ -167,6 +167,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/rhyme-or-not.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -185,7 +186,7 @@ const SETTINGS={
   hard:  {tiers:[1,2,3], limit:22, label:'⭐⭐⭐ Hard'},
 };
 
-let difficulty='easy',questions=[],qi=0,score=0,currentQ=null;
+let difficulty='easy',questions=[],qi=0,score=0,currentQ=null,_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -202,6 +203,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   currentQ=q;
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
@@ -233,6 +235,7 @@ function answer(userSaysYes){
     speak(q.w1.word);setTimeout(()=>speak(q.w2.word),600);
     const msg=q.rhymes?`✅ Yes! ${q.w1.word} and ${q.w2.word} rhyme!`:`✅ Right — ${q.w1.word} and ${q.w2.word} don't rhyme!`;
     document.getElementById('statusMsg').textContent=msg;
+    Tracker.record('rhyme-or-not',q.w1.word+'/'+q.w2.word,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
     setTimeout(()=>nextQ(),900);
   }else{
@@ -241,6 +244,7 @@ function answer(userSaysYes){
     setTimeout(()=>{speak(q.w1.word);setTimeout(()=>speak(q.w2.word),600);},400);
     const msg=q.rhymes?`❌ They DO rhyme — ${q.w1.word} / ${q.w2.word}!`:`❌ They don't rhyme — ${q.w1.word} and ${q.w2.word} sound different at the end!`;
     document.getElementById('statusMsg').textContent=msg;
+    Tracker.record('rhyme-or-not',q.w1.word+'/'+q.w2.word,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
     setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);
   }

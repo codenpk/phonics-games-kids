@@ -158,6 +158,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/r-controlled.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -178,7 +179,7 @@ const SETTINGS={
 };
 const PAT_CLASS={AR:'pat-ar',ER:'pat-er',IR:'pat-ir',OR:'pat-or',UR:'pat-ur'};
 
-let difficulty='easy',questions=[],qi=0,score=0,activePatterns=[];
+let difficulty='easy',questions=[],qi=0,score=0,activePatterns=[],_qStart=0,_firstTry=true;
 
 function highlightPattern(word,pattern){
   const idx=word.indexOf(pattern);
@@ -202,6 +203,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
@@ -234,6 +236,7 @@ function choose(btn,pat,q){
     document.getElementById('score').textContent=score;
     speak(q.word);
     document.getElementById('statusMsg').textContent=`✅ ${q.word} has the ${q.pattern} pattern!`;
+    Tracker.record('r-controlled',currentWord,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
   }else{
     btn.classList.add('wrong');
@@ -241,6 +244,7 @@ function choose(btn,pat,q){
     if(cb)cb.classList.add('correct');
     setTimeout(()=>speak(q.word),400);
     document.getElementById('statusMsg').textContent=`❌ ${q.word} has ${q.pattern}, not ${pat}!`;
+    Tracker.record('r-controlled',currentWord,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);

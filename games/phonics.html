@@ -175,6 +175,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/phonics.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -206,7 +207,7 @@ const PATTERN_LABEL={
   3: 'Long vowels & vowel teams',
 };
 
-let difficulty='easy',questions=[],qi=0,score=0;
+let difficulty='easy',questions=[],qi=0,score=0,_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -254,6 +255,7 @@ function buildTiles(display,filledAnswer,result){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
@@ -288,12 +290,14 @@ function choose(btn,opt,q){
     score+=10;
     document.getElementById('score').textContent=score;
     document.getElementById('statusMsg').textContent='✅ '+q.word+'!';
+    Tracker.record('phonics',q.word,true,_firstTry,Date.now()-_qStart);
     soundCorrect();speak(q.word);
   }else{
     btn.classList.add('wrong');
     buildTiles(q.display,q.answer,'correct');
     document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===q.answer)b.classList.add('correct');});
     document.getElementById('statusMsg').textContent='❌ The answer is '+q.answer;
+    Tracker.record('phonics',q.word,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();setTimeout(()=>speak(q.word),400);
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);

@@ -188,6 +188,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/magic-e.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -207,7 +208,7 @@ const SETTINGS={
   hard:  {tiers:[3],     limit:6,  label:'⭐⭐⭐ Hard'},
 };
 
-let difficulty,questions=[],qi=0,score=0,currentQ=null,eActivated=false;
+let difficulty,questions=[],qi=0,score=0,currentQ=null,eActivated=false,_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -223,6 +224,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   currentQ=q;
   eActivated=false;
@@ -296,6 +298,7 @@ function choose(btn,word,q){
     document.getElementById('statusMsg').textContent=`✅ ${q.cvc.word} → ${q.cvce.word}! The ${vowelLetter} says its name!`;
     rule.textContent=`✨ Silent E makes ${vowelLetter} say its long sound: /${vowelLetter.toLowerCase()}/!`;
     rule.style.display='block';
+    Tracker.record('magic-e',q.cvce.word,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
   }else{
     btn.classList.add('wrong');
@@ -304,6 +307,7 @@ function choose(btn,word,q){
     document.getElementById('statusMsg').textContent=`❌ ${q.cvc.word} + E = ${q.cvce.word} — the ${vowelLetter} says its name!`;
     rule.textContent=`✨ Silent E makes ${vowelLetter} say its long sound: /${vowelLetter.toLowerCase()}/!`;
     rule.style.display='block';
+    Tracker.record('magic-e',q.cvce.word,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);

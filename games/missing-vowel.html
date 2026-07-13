@@ -164,6 +164,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/missing-vowel.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -185,7 +186,7 @@ const SETTINGS={
 const VOWEL_CLASS={A:'va',E:'ve',I:'vi',O:'vo',U:'vu'};
 const VOWELS=['A','E','I','O','U'];
 
-let difficulty='easy',questions=[],qi=0,score=0;
+let difficulty='easy',questions=[],qi=0,score=0,_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -202,6 +203,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
@@ -246,6 +248,7 @@ function choose(btn,vowel,q){
     document.getElementById('score').textContent=score;
     speak(q.word);
     document.getElementById('statusMsg').textContent=`✅ ${q.word} — the vowel is ${q.answer}!`;
+    Tracker.record('missing-vowel',currentWord,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
   }else{
     btn.classList.add('wrong');
@@ -254,6 +257,7 @@ function choose(btn,vowel,q){
     blank.classList.add('filled');
     setTimeout(()=>speak(q.word),400);
     document.getElementById('statusMsg').textContent=`❌ ${q.word} — the vowel is ${q.answer}`;
+    Tracker.record('missing-vowel',currentWord,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);

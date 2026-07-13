@@ -157,6 +157,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/first-sound.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -192,7 +193,7 @@ const HINTS={
   ST:'/st/ blend',SK:'/sk/ blend',SP:'/sp/ blend',SW:'/sw/ blend',SN:'/sn/ blend',
 };
 
-let difficulty='easy',questions=[],qi=0,score=0;
+let difficulty='easy',questions=[],qi=0,score=0,_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -209,6 +210,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Sound ${qi+1} of ${questions.length}`;
@@ -240,6 +242,7 @@ function choose(btn,opt,q){
     score+=10;
     document.getElementById('score').textContent=score;
     document.getElementById('statusMsg').textContent=`✅ ${q.target.word} starts with ${q.sound}!`;
+    Tracker.record('first-sound',q.target.word,true,_firstTry,Date.now()-_qStart);
     soundCorrect();speak(q.target.word);
   }else{
     btn.classList.add('wrong');
@@ -247,6 +250,7 @@ function choose(btn,opt,q){
       if(b.querySelector('.choice-word').textContent===q.target.word)b.classList.add('correct');
     });
     document.getElementById('statusMsg').textContent=`❌ ${q.target.word} starts with ${q.sound}`;
+    Tracker.record('first-sound',q.target.word,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();setTimeout(()=>speak(q.target.word),400);
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);

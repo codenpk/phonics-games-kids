@@ -163,6 +163,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/digraph-detective.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -183,7 +184,7 @@ const SETTINGS={
 };
 const DG_CLASS={SH:'dg-sh',CH:'dg-ch',TH:'dg-th',WH:'dg-wh',PH:'dg-ph',NG:'dg-ng',CK:'dg-ck'};
 
-let difficulty='easy',questions=[],qi=0,score=0,activeDigraphs=[];
+let difficulty='easy',questions=[],qi=0,score=0,activeDigraphs=[],_qStart=0,_firstTry=true;
 
 function highlightWord(word,digraph,position){
   const idx=position==='beginning'?0:word.length-digraph.length;
@@ -209,6 +210,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
@@ -242,6 +244,7 @@ function choose(btn,dg,q){
     document.getElementById('score').textContent=score;
     speak(q.word);
     document.getElementById('statusMsg').textContent=`✅ ${q.word} has the ${q.digraph} sound!`;
+    Tracker.record('digraph-detective',currentWord,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
   }else{
     btn.classList.add('wrong');
@@ -249,6 +252,7 @@ function choose(btn,dg,q){
     if(cb)cb.classList.add('correct');
     setTimeout(()=>speak(q.word),400);
     document.getElementById('statusMsg').textContent=`❌ That's ${dg} — ${q.word} has ${q.digraph}!`;
+    Tracker.record('digraph-detective',currentWord,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);

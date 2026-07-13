@@ -173,6 +173,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/word-sort.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -193,7 +194,7 @@ const SETTINGS={
 const BUCKET_STYLES=['bucket-a sbtn-a','bucket-b sbtn-b','bucket-c sbtn-c'];
 const BTN_STYLES=['sbtn-a','sbtn-b','sbtn-c'];
 
-let difficulty='easy',score=0;
+let difficulty='easy',score=0,_qStart=0,_firstTry=true;
 let roundSets=[],currentSetIdx=0,roundWords=[],wordIdx=0,bucketCounts={};
 
 function startGame(diff){
@@ -262,6 +263,7 @@ function showWord(){
     setTimeout(()=>startRound(),400);
     return;
   }
+  _qStart=Date.now();_firstTry=true;
   const w=roundWords[wordIdx];
   document.getElementById('wordEmoji').textContent=w.emoji;
   document.getElementById('wordText').textContent=w.word;
@@ -291,6 +293,7 @@ function sortWord(btn,family){
     document.getElementById(`bcount-${family}`).textContent=`${bucketCounts[family]} word${bucketCounts[family]>1?'s':''}`;
     speak(w.word);
     document.getElementById('statusMsg').textContent=`✅ ${w.word} belongs to ${w.family}!`;
+    Tracker.record('word-sort',w.word,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
     setTimeout(()=>{wordIdx++;showWord();},800);
   }else{
@@ -298,6 +301,7 @@ function sortWord(btn,family){
     document.getElementById(`sbtn-${w.family}`).classList.add('correct');
     setTimeout(()=>speak(w.word),400);
     document.getElementById('statusMsg').textContent=`❌ ${w.word} belongs to ${w.family}`;
+    Tracker.record('word-sort',w.word,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
     setTimeout(()=>{
       document.querySelectorAll('.sort-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});

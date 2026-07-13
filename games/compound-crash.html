@@ -166,6 +166,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/compound-words.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -184,7 +185,7 @@ const SETTINGS={
   hard:  {tiers:[1,2,3], limit:20, label:'⭐⭐⭐ Hard'},
 };
 
-let difficulty='easy',questions=[],qi=0,score=0;
+let difficulty='easy',questions=[],qi=0,score=0,_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -201,6 +202,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
@@ -235,6 +237,7 @@ function choose(btn,opt,q){
     cr.classList.add('crash-anim');
     setTimeout(()=>speak(q.compound),300);
     document.getElementById('statusMsg').textContent='';
+    Tracker.record('compound-crash',q.compound,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
   }else{
     btn.classList.add('wrong');
@@ -244,6 +247,7 @@ function choose(btn,opt,q){
     document.getElementById('compoundReveal').textContent=`${q.first.word} + ${q.correct.word} = ${q.compound}`;
     setTimeout(()=>speak(q.compound),400);
     document.getElementById('statusMsg').textContent=`❌ ${q.first.word} + ${q.correct.word} = ${q.compound}`;
+    Tracker.record('compound-crash',q.compound,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);

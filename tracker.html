@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Progress Tracker — Phonics Games</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;min-height:100vh;
+      color:#1e293b;padding:16px 12px 40px}
+    .top-bar{display:flex;justify-content:space-between;align-items:center;
+      max-width:700px;margin:0 auto 20px}
+    .back-link{background:#fff;border:1.5px solid #e2e8f0;border-radius:20px;
+      padding:6px 14px;font-size:.85rem;font-weight:600;color:#475569;
+      text-decoration:none;transition:background .15s}
+    .back-link:hover{background:#f8fafc}
+    h1{font-size:1.45rem;font-weight:700;color:#0f172a;text-align:center;
+      margin-bottom:4px;max-width:700px;margin-left:auto;margin-right:auto}
+    .subtitle{text-align:center;color:#64748b;font-size:.82rem;margin-bottom:20px}
+
+    /* Stats row */
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+      max-width:700px;margin:0 auto 22px}
+    .stat-card{background:#fff;border-radius:16px;padding:16px 12px;text-align:center;
+      box-shadow:0 1px 4px rgba(0,0,0,.07)}
+    .stat-num{font-size:2rem;font-weight:700;color:#4f46e5;line-height:1}
+    .stat-label{font-size:.72rem;color:#64748b;margin-top:4px;font-weight:500;
+      text-transform:uppercase;letter-spacing:.5px}
+
+    /* Section */
+    .section{background:#fff;border-radius:18px;padding:18px 16px;
+      max-width:700px;margin:0 auto 18px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+    .section-title{font-size:.9rem;font-weight:700;color:#0f172a;
+      margin-bottom:14px;display:flex;align-items:center;gap:7px}
+
+    /* Needs practice */
+    .word-chips{display:flex;flex-wrap:wrap;gap:8px}
+    .word-chip{border-radius:10px;padding:6px 12px;font-size:.88rem;font-weight:600;
+      display:flex;align-items:center;gap:6px}
+    .chip-bad{background:#fee2e2;color:#991b1b}
+    .chip-mid{background:#fef9c3;color:#713f12}
+    .chip-ok{background:#dcfce7;color:#166534}
+    .chip-pct{font-size:.75rem;font-weight:400;opacity:.8}
+    .no-data{color:#94a3b8;font-size:.88rem;text-align:center;padding:12px 0}
+
+    /* Per-game table */
+    .game-table{width:100%;border-collapse:collapse}
+    .game-table th{text-align:left;font-size:.72rem;text-transform:uppercase;
+      letter-spacing:.5px;color:#64748b;font-weight:600;padding:0 8px 8px 0}
+    .game-table th:last-child,.game-table td:last-child{text-align:right}
+    .game-table td{padding:8px 8px 8px 0;border-top:1px solid #f1f5f9;
+      font-size:.88rem;color:#1e293b}
+    .acc-bar-wrap{display:flex;align-items:center;gap:8px}
+    .acc-bar-bg{flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden;min-width:60px}
+    .acc-bar-fill{height:100%;border-radius:4px;transition:width .4s}
+    .acc-pct{font-size:.82rem;font-weight:600;min-width:36px;text-align:right}
+    .bar-green{background:#22c55e}
+    .bar-yellow{background:#f59e0b}
+    .bar-red{background:#ef4444}
+
+    /* Weekly activity */
+    .activity-row{display:flex;gap:6px;align-items:flex-end;height:80px}
+    .activity-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+    .activity-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%}
+    .activity-bar{width:100%;border-radius:4px 4px 0 0;min-height:3px;
+      background:linear-gradient(135deg,#818cf8,#4f46e5);transition:height .4s}
+    .activity-label{font-size:.65rem;color:#94a3b8;font-weight:500}
+    .activity-count{font-size:.68rem;color:#64748b}
+
+    /* Response time */
+    .speed-label{font-size:.82rem;color:#475569;text-align:center;margin-top:6px}
+
+    /* Clear btn */
+    .clear-btn{background:#fee2e2;border:none;border-radius:10px;padding:8px 16px;
+      color:#991b1b;font-size:.82rem;font-weight:600;cursor:pointer;margin-top:10px}
+    .clear-btn:hover{background:#fecaca}
+
+    /* Responsive */
+    @media(max-width:400px){.stats-row{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <a class="back-link" href="launcher.html">← All Games</a>
+</div>
+<h1>📊 Progress Tracker</h1>
+<p class="subtitle">How well are the words sticking?</p>
+
+<div class="stats-row" id="statsRow"></div>
+
+<div class="section">
+  <div class="section-title">⚠️ Needs Practice</div>
+  <div class="word-chips" id="needsPractice">
+    <span class="no-data">Play some games first to see which words need more practice.</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">🎮 Accuracy by Game</div>
+  <table class="game-table" id="gameTable">
+    <thead><tr>
+      <th>Game</th><th>Questions</th><th>First-Try Accuracy</th><th>Avg Speed</th>
+    </tr></thead>
+    <tbody id="gameTableBody"></tbody>
+  </table>
+  <p class="no-data" id="gameTableEmpty" style="display:none">No game data yet.</p>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 This Week</div>
+  <div class="activity-row" id="activityRow"></div>
+  <p class="speed-label" id="speedLabel"></p>
+</div>
+
+<div class="section" style="text-align:center">
+  <p style="font-size:.82rem;color:#64748b;margin-bottom:10px">
+    Data is stored locally on this device only — nothing is sent anywhere.
+  </p>
+  <button class="clear-btn" onclick="clearData()">🗑️ Clear all data</button>
+</div>
+
+<script>
+const GAME_NAMES={
+  'phonics':'Phonics Tap','first-sound':'First Sound','blend-builder':'Blend Builder',
+  'rhyme-rocket':'Rhyme Rocket','diphthong-dash':'Diphthong Dash',
+  'long-or-short':'Long or Short','vowel-volcano':'Vowel Volcano',
+  'digraph-detective':'Digraph Detective','r-controlled':'R-Controlled',
+  'missing-vowel':'Missing Vowel','syllable-tap':'Syllable Tap',
+  'compound-crash':'Compound Crash','contraction-action':'Contraction Action',
+  'ending-sounds':'Ending Sounds','odd-one-out':'Odd One Out',
+  'long-vowel-magic':'Long Vowel Magic','plural-power':'Plural Power',
+  'rhyme-or-not':'Rhyme or Not','magic-e':'Magic E',
+  'sight-word-flash':'Sight Word Flash','spell-it':'Spell It',
+  'vowel-swap':'Vowel Swap','word-ladder':'Word Ladder',
+  'word-match':'Word Match','word-sort':'Word Sort','abc-order':'ABC Order'
+};
+
+function loadEntries(){
+  try{const d=JSON.parse(localStorage.getItem('phonics_tracker')||'null');
+    return(d&&d.v===1)?d.entries:[];}
+  catch(e){return[];}
+}
+
+function pct(n,d){return d?Math.round(n/d*100):0;}
+
+function barColor(p){return p>=80?'bar-green':p>=50?'bar-yellow':'bar-red';}
+
+function render(){
+  const entries=loadEntries();
+
+  // ── Stats row ──
+  const totalQ=entries.length;
+  const firstTryCorrect=entries.filter(e=>e.c&&e.f).length;
+  const firstTryTotal=entries.filter(e=>e.f).length;
+  const accPct=pct(firstTryCorrect,firstTryTotal);
+  const dates=new Set(entries.map(e=>new Date(e.ts).toDateString()));
+  const daysActive=dates.size;
+
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${totalQ}</div><div class="stat-label">Questions answered</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:${accPct>=80?'#16a34a':accPct>=50?'#d97706':'#dc2626'}">${firstTryTotal?accPct+'%':'—'}</div><div class="stat-label">First-try accuracy</div></div>
+    <div class="stat-card"><div class="stat-num">${daysActive}</div><div class="stat-label">Days active</div></div>
+  `;
+
+  // ── Needs practice ──
+  // Group by word across all games, count first-try attempts and correct
+  const wordMap={};
+  entries.filter(e=>e.f).forEach(e=>{
+    if(!wordMap[e.w])wordMap[e.w]={correct:0,total:0};
+    wordMap[e.w].total++;
+    if(e.c)wordMap[e.w].correct++;
+  });
+  // Only show words with ≥3 first-try attempts, sorted by accuracy asc
+  const struggling=Object.entries(wordMap)
+    .filter(([,v])=>v.total>=3)
+    .map(([w,v])=>({w,pct:pct(v.correct,v.total),total:v.total}))
+    .sort((a,b)=>a.pct-b.pct)
+    .slice(0,20);
+
+  const npEl=document.getElementById('needsPractice');
+  if(struggling.length===0){
+    npEl.innerHTML='<span class="no-data">Play some games first to see which words need more practice.</span>';
+  }else{
+    npEl.innerHTML=struggling.map(({w,pct:p})=>{
+      const cls=p<40?'chip-bad':p<70?'chip-mid':'chip-ok';
+      return`<span class="word-chip ${cls}">${w} <span class="chip-pct">${p}%</span></span>`;
+    }).join('');
+  }
+
+  // ── Per-game table ──
+  const gameMap={};
+  entries.forEach(e=>{
+    if(!gameMap[e.g])gameMap[e.g]={total:0,firstTotal:0,firstCorrect:0,msArr:[]};
+    const gm=gameMap[e.g];
+    gm.total++;
+    if(e.f){gm.firstTotal++;if(e.c)gm.firstCorrect++;}
+    if(e.ms>0&&e.ms<30000)gm.msArr.push(e.ms);
+  });
+
+  const rows=Object.entries(gameMap)
+    .map(([g,gm])=>{
+      const acc=pct(gm.firstCorrect,gm.firstTotal);
+      const avgMs=gm.msArr.length?Math.round(gm.msArr.reduce((a,b)=>a+b,0)/gm.msArr.length):0;
+      return{g,name:GAME_NAMES[g]||g,total:gm.total,acc,avgMs};
+    })
+    .sort((a,b)=>a.acc-b.acc);
+
+  const tbody=document.getElementById('gameTableBody');
+  const empty=document.getElementById('gameTableEmpty');
+  if(rows.length===0){tbody.innerHTML='';empty.style.display='block';}
+  else{
+    empty.style.display='none';
+    tbody.innerHTML=rows.map(r=>{
+      const bc=barColor(r.acc);
+      const speed=r.avgMs?`${(r.avgMs/1000).toFixed(1)}s`:'—';
+      return`<tr>
+        <td>${r.name}</td>
+        <td>${r.total}</td>
+        <td><div class="acc-bar-wrap">
+          <div class="acc-bar-bg"><div class="acc-bar-fill ${bc}" style="width:${r.acc}%"></div></div>
+          <span class="acc-pct" style="color:${r.acc>=80?'#16a34a':r.acc>=50?'#d97706':'#dc2626'}">${r.acc}%</span>
+        </div></td>
+        <td>${speed}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Weekly activity ──
+  const today=new Date();
+  const days=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(today);d.setDate(today.getDate()-i);
+    days.push(d);
+  }
+  const dayLabels=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const counts=days.map(d=>{
+    const ds=d.toDateString();
+    return entries.filter(e=>new Date(e.ts).toDateString()===ds).length;
+  });
+  const maxCount=Math.max(...counts,1);
+
+  document.getElementById('activityRow').innerHTML=days.map((d,i)=>{
+    const h=Math.round((counts[i]/maxCount)*64)+4;
+    const isToday=d.toDateString()===today.toDateString();
+    return`<div class="activity-col">
+      <div class="activity-bar-wrap"><div class="activity-bar" style="height:${h}px;opacity:${isToday?1:.7}"></div></div>
+      <div class="activity-label" style="font-weight:${isToday?700:400}">${dayLabels[d.getDay()]}</div>
+      <div class="activity-count">${counts[i]||''}</div>
+    </div>`;
+  }).join('');
+
+  // Avg speed summary
+  const allMs=entries.filter(e=>e.ms>0&&e.ms<30000).map(e=>e.ms);
+  if(allMs.length){
+    const avg=(allMs.reduce((a,b)=>a+b,0)/allMs.length/1000).toFixed(1);
+    document.getElementById('speedLabel').textContent=`Average response time: ${avg}s`;
+  }
+}
+
+function clearData(){
+  if(!confirm('Clear all tracking data? This cannot be undone.'))return;
+  localStorage.removeItem('phonics_tracker');
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

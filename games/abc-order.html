@@ -152,6 +152,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/abc-order.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -170,7 +171,7 @@ const SETTINGS={
   hard:  {tiers:[3],   limit:10, label:'⭐⭐⭐ Hard'},
 };
 
-let difficulty='easy',questions=[],qi=0,score=0,nextIdx=0,sortedWords=[],displayTiles=[];
+let difficulty='easy',questions=[],qi=0,score=0,nextIdx=0,sortedWords=[],displayTiles=[],_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -187,6 +188,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Round ${qi+1} of ${questions.length}`;
@@ -229,6 +231,7 @@ function tapTile(word,tile){
     tile.querySelector('.pos-badge').textContent=(nextIdx+1)+'';
     document.getElementById(`slot-${nextIdx}`).classList.add('filled');
     speak(word);
+    Tracker.record('abc-order',word,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
     nextIdx++;
     if(nextIdx===sortedWords.length){
@@ -239,6 +242,7 @@ function tapTile(word,tile){
     }
   }else{
     tile.classList.add('wrong');
+    Tracker.record('abc-order',word,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
     setTimeout(()=>tile.classList.remove('wrong'),450);
     document.getElementById('statusMsg').textContent=`Hmm — think about the alphabet order!`;

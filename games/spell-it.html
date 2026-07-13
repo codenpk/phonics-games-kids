@@ -166,6 +166,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/spelling.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -185,7 +186,7 @@ const SETTINGS={
   hard:  {tiers:[1,2,3], limit:20, label:'⭐⭐⭐ Hard'},
 };
 
-let difficulty='easy',questions=[],qi=0,score=0,currentWord='';
+let difficulty='easy',questions=[],qi=0,score=0,currentWord='',_qStart=0,_firstTry=true;
 let shuffledTiles=[],filledIndices=[];
 
 function startGame(diff){
@@ -203,6 +204,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
@@ -271,10 +273,12 @@ function checkAnswer(q){
     document.getElementById('score').textContent=score;
     speak(q.word);
     document.getElementById('statusMsg').textContent=`✅ ${q.word}!`;
+    Tracker.record('spell-it',currentWord,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
     setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',700);
   }else{
     document.querySelectorAll('.letter-box').forEach(b=>b.classList.add('wrong'));
+    Tracker.record('spell-it',currentWord,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
     setTimeout(()=>resetInput(q),800);
   }

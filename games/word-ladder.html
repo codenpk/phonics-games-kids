@@ -177,6 +177,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/word-ladder.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -196,7 +197,7 @@ const SETTINGS={
   hard:  {tiers:[3],   limit:4,  label:'⭐⭐⭐ Hard (4 steps)'},
 };
 
-let difficulty,questions=[],qi=0,score=0,currentQ=null,stepIdx=0;
+let difficulty,questions=[],qi=0,score=0,currentQ=null,stepIdx=0,_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -247,6 +248,7 @@ function renderRungs(){
 }
 
 function renderStep(){
+  _qStart=Date.now();_firstTry=true;
   const q=currentQ;
   const step=q.steps[stepIdx];
   document.getElementById('stepIndicator').textContent=`Step ${stepIdx+1} of ${q.steps.length}`;
@@ -280,6 +282,7 @@ function choose(btn,word,step){
     btn.classList.add('correct');
     speak(word);
     soundStep();
+    Tracker.record('word-ladder',step.correct,true,_firstTry,Date.now()-_qStart);
     // Fill the rung
     const r=document.getElementById(`rung-${stepIdx}`);
     if(r){r.className='rung filled';r.textContent=word;}
@@ -303,6 +306,7 @@ function choose(btn,word,step){
     }
   }else{
     btn.classList.add('wrong');
+    Tracker.record('word-ladder',step.correct,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
     document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=false);
     document.getElementById('statusMsg').textContent=`Hmm — only ONE letter should change from "${step.from}"!`;

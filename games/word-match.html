@@ -162,6 +162,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/word-match.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -181,7 +182,7 @@ const SETTINGS={
 };
 const PAIRS_PER_ROUND=4;
 
-let difficulty='easy',pool=[],totalRounds=3,currentRound=0,score=0;
+let difficulty='easy',pool=[],totalRounds=3,currentRound=0,score=0,_qStart=0;
 let selectedWord=null,selectedPic=null,matched=new Set();
 let roundPairs=[];
 
@@ -202,6 +203,7 @@ function startGame(diff){
 function nextRound(){
   currentRound++;
   if(currentRound>totalRounds){showDone();return;}
+  _qStart=Date.now();
   matched=new Set();
   selectedWord=null;selectedPic=null;
   document.getElementById('btnNext').style.display='none';
@@ -277,6 +279,7 @@ function tryMatch(){
     matched.add(sw.word);
     score+=10;
     document.getElementById('score').textContent=score;
+    Tracker.record('word-match',sw.word,true,true,Date.now()-_qStart);
     soundCorrect();
     if(matched.size===roundPairs.length){
       document.getElementById('statusMsg').textContent='🎉 Round complete!';

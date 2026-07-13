@@ -162,6 +162,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/syllables.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -183,7 +184,7 @@ const SETTINGS={
   hard:  {tiers:[1,2,3], limit:20, label:'⭐⭐⭐ Hard'},
 };
 
-let difficulty='easy',questions=[],qi=0,score=0;
+let difficulty='easy',questions=[],qi=0,score=0,_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -200,6 +201,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
@@ -235,6 +237,7 @@ function choose(btn,n,q){
     document.getElementById('score').textContent=score;
     speak(q.word);
     document.getElementById('statusMsg').textContent=`✅ ${q.syllables} ${LABELS[q.syllables]}!`;
+    Tracker.record('syllable-tap',q.word,true,_firstTry,Date.now()-_qStart);
     soundClap(q.syllables);
   }else{
     btn.classList.add('wrong');
@@ -243,6 +246,7 @@ function choose(btn,n,q){
     });
     setTimeout(()=>speak(q.word),400);
     document.getElementById('statusMsg').textContent=`❌ ${q.word} has ${q.syllables} ${LABELS[q.syllables]}`;
+    Tracker.record('syllable-tap',q.word,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
   }
   splitEl.textContent=q.split;

@@ -162,6 +162,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/vowel-swap.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -181,7 +182,7 @@ const SETTINGS={
 };
 const VOWELS=['A','E','I','O','U'];
 
-let difficulty,questions=[],qi=0,score=0,currentQ=null,foundCount=0,totalValid=0,triedVowels={};
+let difficulty,questions=[],qi=0,score=0,currentQ=null,foundCount=0,totalValid=0,triedVowels={},_qStart=0;
 
 function startGame(diff){
   difficulty=diff;
@@ -197,6 +198,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();
   const q=questions[qi];
   currentQ=q;
   foundCount=0;
@@ -246,6 +248,7 @@ function tryVowel(v,btn,q){
     btn.classList.add('found');
     btn.disabled=true;
     speak(validEntry.word);
+    Tracker.record('vowel-swap',validEntry.word,true,true,Date.now()-_qStart);
     soundCorrect();
     foundCount++;
     score+=5;

@@ -162,6 +162,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/ending-sounds.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -180,7 +181,7 @@ const SETTINGS={
   hard:  {tiers:[1,2,3], limit:20, label:'⭐⭐⭐ Hard'},
 };
 
-let difficulty='easy',questions=[],qi=0,score=0;
+let difficulty='easy',questions=[],qi=0,score=0,_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -197,6 +198,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Round ${qi+1} of ${questions.length}`;
@@ -230,6 +232,7 @@ function choose(btn,item,q){
     document.getElementById('score').textContent=score;
     speak(q.answer.word);
     document.getElementById('statusMsg').textContent=`✅ ${q.target.word} and ${q.answer.word} both end with ${q.sound}!`;
+    Tracker.record('ending-sounds',q.answer.word,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
   }else{
     btn.classList.add('wrong');
@@ -238,6 +241,7 @@ function choose(btn,item,q){
     });
     setTimeout(()=>speak(q.answer.word),400);
     document.getElementById('statusMsg').textContent=`❌ ${q.answer.word} ends like ${q.target.word} — both say ${q.sound}`;
+    Tracker.record('ending-sounds',q.answer.word,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);

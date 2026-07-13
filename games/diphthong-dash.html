@@ -161,6 +161,7 @@
 </div>
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="../data/tracker.js"></script>
 <script src="../data/diphthongs.js"></script>
 <script>
 const AC=window.AudioContext||window.webkitAudioContext;let ac;
@@ -185,7 +186,7 @@ const BUCKET_CONFIG={
   OW:{label:'OW',cls:'bkt-ow',rule:'/ow/ sound\n(cow, town, crown)'},
 };
 
-let difficulty,questions=[],qi=0,score=0,currentQ=null,activePatterns=[];
+let difficulty,questions=[],qi=0,score=0,currentQ=null,activePatterns=[],_qStart=0,_firstTry=true;
 
 function startGame(diff){
   difficulty=diff;
@@ -203,6 +204,7 @@ function startGame(diff){
 }
 
 function showQ(){
+  _qStart=Date.now();_firstTry=true;
   const q=questions[qi];
   currentQ=q;
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
@@ -240,6 +242,7 @@ function choose(btn,pat,q){
     document.getElementById('statusMsg').textContent=`✅ ${q.word} has ${q.pattern}!`;
     tip.textContent=`📖 "${q.word}" — the ${q.pattern} makes the /oi/ or /ow/ sound!`;
     tip.style.display='block';
+    Tracker.record('diphthong-dash',q.word,true,_firstTry,Date.now()-_qStart);
     soundCorrect();
     setTimeout(()=>nextQ(),900);
   }else{
@@ -249,6 +252,7 @@ function choose(btn,pat,q){
     document.getElementById('statusMsg').textContent=`❌ "${q.word}" has ${q.pattern}, not ${pat}!`;
     tip.textContent=`📖 Look for the letters ${q.pattern} inside "${q.word}"!`;
     tip.style.display='block';
+    Tracker.record('diphthong-dash',q.word,false,_firstTry,Date.now()-_qStart);_firstTry=false;
     soundWrong();
     setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);
   }
