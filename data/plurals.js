@@ -1,0 +1,61 @@
+// Plural Power — choose the correct plural form
+// rule: "s" | "es" | "ies"
+// distractors: 2 wrong plural forms
+window.PLURALS = [
+
+  // ── Tier 1: simple -s plurals ─────────────────────────────────────────────
+  {tier:1, emoji:"🐱", singular:"CAT",    plural:"CATS",    rule:"s",
+    distractors:["CATES","CATIES"]},
+  {tier:1, emoji:"🐶", singular:"DOG",    plural:"DOGS",    rule:"s",
+    distractors:["DOGES","DOGIES"]},
+  {tier:1, emoji:"🐦", singular:"BIRD",   plural:"BIRDS",   rule:"s",
+    distractors:["BIRDES","BIRDIES"]},
+  {tier:1, emoji:"🌸", singular:"FLOWER", plural:"FLOWERS", rule:"s",
+    distractors:["FLOWERES","FLOWERYS"]},
+  {tier:1, emoji:"🍎", singular:"APPLE",  plural:"APPLES",  rule:"s",
+    distractors:["APPLES","APPLIES"]},
+  {tier:1, emoji:"🪑", singular:"CHAIR",  plural:"CHAIRS",  rule:"s",
+    distractors:["CHAIRES","CHAIRIES"]},
+  {tier:1, emoji:"📚", singular:"BOOK",   plural:"BOOKS",   rule:"s",
+    distractors:["BOOKES","BOOKIES"]},
+  {tier:1, emoji:"🎈", singular:"BALLOON",plural:"BALLOONS",rule:"s",
+    distractors:["BALLOONES","BALLOONIES"]},
+  {tier:1, emoji:"⭐", singular:"STAR",   plural:"STARS",   rule:"s",
+    distractors:["STARES","STARIES"]},
+
+  // ── Tier 2: -es plurals (words ending in s, x, ch, sh, z) ────────────────
+  {tier:2, emoji:"🦊", singular:"FOX",    plural:"FOXES",   rule:"es",
+    distractors:["FOXS","FOXIES"]},
+  {tier:2, emoji:"🚌", singular:"BUS",    plural:"BUSES",   rule:"es",
+    distractors:["BUSS","BUSIES"]},
+  {tier:2, emoji:"🏖️", singular:"BEACH",  plural:"BEACHES", rule:"es",
+    distractors:["BEACHS","BEACHIES"]},
+  {tier:2, emoji:"🍽️", singular:"DISH",   plural:"DISHES",  rule:"es",
+    distractors:["DISHS","DISHIES"]},
+  {tier:2, emoji:"📦", singular:"BOX",    plural:"BOXES",   rule:"es",
+    distractors:["BOXS","BOXIES"]},
+  {tier:2, emoji:"🌸", singular:"BRANCH", plural:"BRANCHES",rule:"es",
+    distractors:["BRANCHS","BRANCHIES"]},
+  {tier:2, emoji:"🕰️", singular:"WATCH",  plural:"WATCHES", rule:"es",
+    distractors:["WATCHS","WATCHIES"]},
+  {tier:2, emoji:"🦟", singular:"BUZZ",   plural:"BUZZES",  rule:"es",
+    distractors:["BUZZS","BUZZIES"]},
+
+  // ── Tier 3: -ies plurals (words ending in consonant + y) ─────────────────
+  {tier:3, emoji:"🦋", singular:"BUTTERFLY",plural:"BUTTERFLIES",rule:"ies",
+    distractors:["BUTTERFLYS","BUTTERFLYEES"]},
+  {tier:3, emoji:"🐰", singular:"BUNNY",  plural:"BUNNIES", rule:"ies",
+    distractors:["BUNNYS","BUNNYEES"]},
+  {tier:3, emoji:"🍒", singular:"CHERRY", plural:"CHERRIES",rule:"ies",
+    distractors:["CHERRYS","CHERRYEES"]},
+  {tier:3, emoji:"🧸", singular:"TEDDY",  plural:"TEDDIES", rule:"ies",
+    distractors:["TEDDYS","TEDDYEES"]},
+  {tier:3, emoji:"🌮", singular:"PARTY",  plural:"PARTIES", rule:"ies",
+    distractors:["PARTYS","PARTYEES"]},
+  {tier:3, emoji:"🏙️", singular:"CITY",   plural:"CITIES",  rule:"ies",
+    distractors:["CITYS","CITYEES"]},
+  {tier:3, emoji:"🌼", singular:"DAISY",  plural:"DAISIES", rule:"ies",
+    distractors:["DAISYS","DAISYEES"]},
+  {tier:3, emoji:"🍓", singular:"BERRY",  plural:"BERRIES", rule:"ies",
+    distractors:["BERRYS","BERRYEES"]},
+];
