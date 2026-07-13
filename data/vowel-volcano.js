@@ -1,0 +1,65 @@
+// Vowel Volcano — identify the short vowel in a word
+// tier 1: short A/I/O words (3 buckets)
+// tier 2: all 5 short vowels A/E/I/O/U (5 buckets)
+// tier 3: CCVC/CVCC patterns where vowel needs more attention
+window.VOWEL_VOLCANO = [
+
+  // ── Tier 1: short A / I / O (3 vowels) ─────────────────────────────────────
+  {tier:1, emoji:"🐱", word:"CAT",   vowel:"A"},
+  {tier:1, emoji:"🎩", word:"HAT",   vowel:"A"},
+  {tier:1, emoji:"🥫", word:"CAN",   vowel:"A"},
+  {tier:1, emoji:"🌀", word:"FAN",   vowel:"A"},
+  {tier:1, emoji:"🦇", word:"BAT",   vowel:"A"},
+  {tier:1, emoji:"🗺️", word:"MAP",   vowel:"A"},
+  {tier:1, emoji:"🐷", word:"PIG",   vowel:"I"},
+  {tier:1, emoji:"🔆", word:"BIG",   vowel:"I"},
+  {tier:1, emoji:"🌬️", word:"FIN",   vowel:"I"},
+  {tier:1, emoji:"📌", word:"PIN",   vowel:"I"},
+  {tier:1, emoji:"⛏️", word:"DIG",   vowel:"I"},
+  {tier:1, emoji:"🪁", word:"KIT",   vowel:"I"},
+  {tier:1, emoji:"🐶", word:"DOG",   vowel:"O"},
+  {tier:1, emoji:"🍲", word:"POT",   vowel:"O"},
+  {tier:1, emoji:"🎯", word:"TOP",   vowel:"O"},
+  {tier:1, emoji:"🧹", word:"MOP",   vowel:"O"},
+  {tier:1, emoji:"🦊", word:"FOX",   vowel:"O"},
+  {tier:1, emoji:"🏠", word:"COT",   vowel:"O"},
+
+  // ── Tier 2: all 5 short vowels ───────────────────────────────────────────────
+  {tier:2, emoji:"🍎", word:"CAP",   vowel:"A"},
+  {tier:2, emoji:"🦀", word:"CLAM",  vowel:"A"},
+  {tier:2, emoji:"🐣", word:"SNAP",  vowel:"A"},
+  {tier:2, emoji:"🛏️", word:"BED",   vowel:"E"},
+  {tier:2, emoji:"🕸️", word:"NET",   vowel:"E"},
+  {tier:2, emoji:"🐾", word:"PET",   vowel:"E"},
+  {tier:2, emoji:"💧", word:"WET",   vowel:"E"},
+  {tier:2, emoji:"✏️", word:"PEN",   vowel:"E"},
+  {tier:2, emoji:"🐟", word:"FIN",   vowel:"I"},
+  {tier:2, emoji:"💋", word:"LIP",   vowel:"I"},
+  {tier:2, emoji:"🧢", word:"SIT",   vowel:"I"},
+  {tier:2, emoji:"🦶", word:"HIP",   vowel:"I"},
+  {tier:2, emoji:"🐸", word:"FROG",  vowel:"O"},
+  {tier:2, emoji:"🧹", word:"STOP",  vowel:"O"},
+  {tier:2, emoji:"⛏️", word:"CHOP",  vowel:"O"},
+  {tier:2, emoji:"☀️", word:"SUN",   vowel:"U"},
+  {tier:2, emoji:"🍞", word:"BUN",   vowel:"U"},
+  {tier:2, emoji:"🏃", word:"RUN",   vowel:"U"},
+  {tier:2, emoji:"🛁", word:"TUB",   vowel:"U"},
+  {tier:2, emoji:"🐛", word:"BUG",   vowel:"U"},
+
+  // ── Tier 3: CCVC / CVCC / harder patterns ───────────────────────────────────
+  {tier:3, emoji:"🥁", word:"DRUM",  vowel:"U"},
+  {tier:3, emoji:"🦀", word:"CRAB",  vowel:"A"},
+  {tier:3, emoji:"🌱", word:"STEM",  vowel:"E"},
+  {tier:3, emoji:"🧳", word:"TRIP",  vowel:"I"},
+  {tier:3, emoji:"🚂", word:"TRAM",  vowel:"A"},
+  {tier:3, emoji:"💐", word:"SPRIG", vowel:"I"},
+  {tier:3, emoji:"🎁", word:"GIFT",  vowel:"I"},
+  {tier:3, emoji:"🪣", word:"PUMP",  vowel:"U"},
+  {tier:3, emoji:"🎃", word:"CLUMP", vowel:"U"},
+  {tier:3, emoji:"🔧", word:"WREN",  vowel:"E"},
+  {tier:3, emoji:"🐑", word:"LAMB",  vowel:"A"},
+  {tier:3, emoji:"🌿", word:"SHRUB", vowel:"U"},
+  {tier:3, emoji:"⚡", word:"FLASH", vowel:"A"},
+  {tier:3, emoji:"🧱", word:"BRICK", vowel:"I"},
+  {tier:3, emoji:"🐾", word:"STOMP", vowel:"O"},
+];
