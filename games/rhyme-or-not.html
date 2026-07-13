@@ -85,6 +85,7 @@
     .game-info-row:last-child{margin-bottom:0}
     .game-info-icon{font-size:1rem;flex-shrink:0;width:1.2em;text-align:center}
     .game-info-text b{color:#111}
+    .speak-btn{background:rgba(0,0,0,.15);border:none;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:4px auto 0;transition:transform .1s}.speak-btn:hover{transform:scale(1.15)}
   </style>
 </head>
 <body>
@@ -137,11 +138,13 @@
     <div class="word-card">
       <span class="word-emoji" id="w1Emoji"></span>
       <span class="word-text" id="w1Text"></span>
+      <button class="speak-btn" aria-label="Hear word 1" onclick="speak(document.getElementById('w1Text').textContent)">🔊</button>
     </div>
     <span class="vs-badge">?</span>
     <div class="word-card">
       <span class="word-emoji" id="w2Emoji"></span>
       <span class="word-text" id="w2Text"></span>
+      <button class="speak-btn" aria-label="Hear word 2" onclick="speak(document.getElementById('w2Text').textContent)">🔊</button>
     </div>
   </div>
   <div class="yn-btns">
@@ -172,6 +175,7 @@ function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const 
 function soundCorrect(){playTone(880,'sine',.15,.2);playTone(1100,'sine',.15,.18,.1);}
 function soundWrong(){playTone(200,'sawtooth',.3,.12);}
 function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+function speak(text){if(!text||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.toLowerCase());u.rate=0.82;u.pitch=1.05;window.speechSynthesis.speak(u);}
 function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#ea580c','#fb923c','#22c55e','#3b82f6','#a855f7'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2200);}
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
 
@@ -206,6 +210,7 @@ function showQ(){
   document.getElementById('w1Text').textContent=q.w1.word;
   document.getElementById('w2Emoji').textContent=q.w2.emoji;
   document.getElementById('w2Text').textContent=q.w2.word;
+  setTimeout(()=>{speak(q.w1.word);setTimeout(()=>speak(q.w2.word),700);},450);
   document.getElementById('statusMsg').textContent='';
   document.getElementById('btnNext').style.display='none';
   document.getElementById('btnYes').disabled=false;
@@ -225,6 +230,7 @@ function answer(userSaysYes){
     (userSaysYes?yesBtn:noBtn).classList.add('correct');
     score+=10;
     document.getElementById('score').textContent=score;
+    speak(q.w1.word);setTimeout(()=>speak(q.w2.word),600);
     const msg=q.rhymes?`✅ Yes! ${q.w1.word} and ${q.w2.word} rhyme!`:`✅ Right — ${q.w1.word} and ${q.w2.word} don't rhyme!`;
     document.getElementById('statusMsg').textContent=msg;
     soundCorrect();
@@ -232,6 +238,7 @@ function answer(userSaysYes){
   }else{
     (userSaysYes?yesBtn:noBtn).classList.add('wrong');
     (q.rhymes?yesBtn:noBtn).classList.add('correct');
+    setTimeout(()=>{speak(q.w1.word);setTimeout(()=>speak(q.w2.word),600);},400);
     const msg=q.rhymes?`❌ They DO rhyme — ${q.w1.word} / ${q.w2.word}!`:`❌ They don't rhyme — ${q.w1.word} and ${q.w2.word} sound different at the end!`;
     document.getElementById('statusMsg').textContent=msg;
     soundWrong();

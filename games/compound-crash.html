@@ -93,6 +93,7 @@
     .game-info-row:last-child{margin-bottom:0}
     .game-info-icon{font-size:1rem;flex-shrink:0;width:1.2em;text-align:center}
     .game-info-text b{color:#111}
+    .speak-btn{background:rgba(0,0,0,.15);border:none;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:4px auto 0;transition:transform .1s}.speak-btn:hover{transform:scale(1.15)}
   </style>
 </head>
 <body>
@@ -144,6 +145,7 @@
   <div class="first-part">
     <span class="first-emoji" id="firstEmoji"></span>
     <div class="first-word" id="firstWord"></div>
+    <button class="speak-btn" aria-label="Hear the word" onclick="speak(document.getElementById('firstWord').textContent)">🔊</button>
   </div>
   <div class="plus-sign">+  ?  =  🤔</div>
   <div class="choices" id="choices"></div>
@@ -172,6 +174,7 @@ function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const 
 function soundCorrect(){playTone(523,'sine',.1,.2);playTone(659,'sine',.1,.18,.1);playTone(784,'sine',.12,.18,.2);playTone(1047,'sine',.15,.18,.3);}
 function soundWrong(){playTone(200,'sawtooth',.3,.12);}
 function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+function speak(text){if(!text||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.toLowerCase());u.rate=0.82;u.pitch=1.05;window.speechSynthesis.speak(u);}
 function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#15803d','#4ade80','#f59e0b','#dc2626','#3b82f6'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2200);}
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
 
@@ -203,6 +206,7 @@ function showQ(){
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
   document.getElementById('firstEmoji').textContent=q.first.emoji;
   document.getElementById('firstWord').textContent=q.first.word;
+  setTimeout(()=>speak(q.first.word),450);
   document.getElementById('compoundReveal').textContent='';
   document.getElementById('statusMsg').textContent='';
   document.getElementById('btnNext').style.display='none';
@@ -229,6 +233,7 @@ function choose(btn,opt,q){
     const cr=document.getElementById('compoundReveal');
     cr.textContent=`${q.first.emoji}${q.correct.emoji} = ${q.compound}! 🎉`;
     cr.classList.add('crash-anim');
+    setTimeout(()=>speak(q.compound),300);
     document.getElementById('statusMsg').textContent='';
     soundCorrect();
   }else{
@@ -237,6 +242,7 @@ function choose(btn,opt,q){
       if(b.querySelector('.choice-word').textContent===q.correct.word)b.classList.add('correct');
     });
     document.getElementById('compoundReveal').textContent=`${q.first.word} + ${q.correct.word} = ${q.compound}`;
+    setTimeout(()=>speak(q.compound),400);
     document.getElementById('statusMsg').textContent=`❌ ${q.first.word} + ${q.correct.word} = ${q.compound}`;
     soundWrong();
   }
