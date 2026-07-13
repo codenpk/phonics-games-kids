@@ -97,6 +97,9 @@
     .game-info-row{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;color:#374151;line-height:1.45;margin-bottom:8px}
     .game-info-row:last-child{margin-bottom:0}
     .game-info-icon{font-size:1rem;flex-shrink:0;width:1.2em;text-align:center}
+    .speak-btn{background:rgba(0,0,0,.08);border:none;border-radius:50%;width:38px;height:38px;font-size:1.2rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;vertical-align:middle;margin-left:10px}
+    .speak-btn:hover{background:rgba(0,0,0,.15);transform:scale(1.1)}
+    .speak-btn:active{transform:scale(.88)}
     .game-info-text b{color:#111}
   </style>
 </head>
@@ -147,7 +150,10 @@
 
 <!-- Game card -->
 <div class="card" id="gameCard" style="display:none">
-  <span class="q-emoji" id="qEmoji">❓</span>
+  <div style="text-align:center;margin-bottom:4px">
+    <span class="q-emoji" id="qEmoji">❓</span>
+    <button class="speak-btn" id="speakBtn" aria-label="Hear the word" onclick="speak(currentWord)">🔊</button>
+  </div>
   <div class="pos-label" id="posLabel"></div>
   <div class="word-display" id="wordDisplay"></div>
   <div class="pattern-tag" id="patternTag"></div>
@@ -177,6 +183,8 @@ function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const 
 function soundCorrect(){playTone(880,'sine',.15,.2);playTone(1100,'sine',.15,.18,.1);}
 function soundWrong(){playTone(200,'sawtooth',.3,.12);}
 function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+function speak(text){if(!text||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.toLowerCase());u.rate=0.82;u.pitch=1.05;window.speechSynthesis.speak(u);}
+let currentWord='';
 function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#f59e0b','#f953c6','#38a169','#667eea','#26c6da'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2000);}
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
 
@@ -254,7 +262,9 @@ function showQ(){
   document.getElementById('btnNext').style.display='none';
   document.getElementById('posLabel').textContent=POS_LABEL[q.position]||'';
   document.getElementById('patternTag').textContent=PATTERN_LABEL[q.tier]||'';
+  currentWord=q.word;
   buildTiles(q.display,null,null);
+  setTimeout(()=>speak(q.word),450);
 
   // Hard mode uses the harder distractor set when available
   const distSet=(difficulty==='hard'&&q.hard)?q.hard:q.distractors;
@@ -278,13 +288,13 @@ function choose(btn,opt,q){
     score+=10;
     document.getElementById('score').textContent=score;
     document.getElementById('statusMsg').textContent='✅ '+q.word+'!';
-    soundCorrect();
+    soundCorrect();speak(q.word);
   }else{
     btn.classList.add('wrong');
     buildTiles(q.display,q.answer,'correct');
     document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===q.answer)b.classList.add('correct');});
     document.getElementById('statusMsg').textContent='❌ The answer is '+q.answer;
-    soundWrong();
+    soundWrong();setTimeout(()=>speak(q.word),400);
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);
 }

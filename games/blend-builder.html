@@ -90,6 +90,9 @@
     .game-info-row{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;color:#374151;line-height:1.45;margin-bottom:8px}
     .game-info-row:last-child{margin-bottom:0}
     .game-info-icon{font-size:1rem;flex-shrink:0;width:1.2em;text-align:center}
+    .speak-btn{background:rgba(0,0,0,.08);border:none;border-radius:50%;width:38px;height:38px;font-size:1.2rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;vertical-align:middle;margin-left:10px}
+    .speak-btn:hover{background:rgba(0,0,0,.15);transform:scale(1.1)}
+    .speak-btn:active{transform:scale(.88)}
     .game-info-text b{color:#111}
   </style>
 </head>
@@ -143,6 +146,7 @@
   <div class="prompt">Pick the start sound 🔤</div>
   <div class="stimulus">
     <span class="stim-emoji" id="stimEmoji"></span>
+    <button class="speak-btn" id="speakBtn" aria-label="Hear the word" onclick="speak(currentWord)" style="display:block;margin:6px auto 0">🔊</button>
     <div class="rime-display">
       <span class="rime-blank" id="rimeBlank"></span>
       <span id="rimeText"></span>
@@ -175,6 +179,8 @@ function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const 
 function soundCorrect(){playTone(523,'sine',.1,.2);playTone(659,'sine',.1,.18,.1);playTone(784,'sine',.12,.18,.2);}
 function soundWrong(){playTone(200,'sawtooth',.3,.12);}
 function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+function speak(text){if(!text||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.toLowerCase());u.rate=0.82;u.pitch=1.05;window.speechSynthesis.speak(u);}
+let currentWord='';
 function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#4f46e5','#818cf8','#16a34a','#f59e0b','#e11d48'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2200);}
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
 
@@ -205,6 +211,8 @@ function showQ(){
   document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
   document.getElementById('stimEmoji').textContent=q.emoji;
+  currentWord=q.word;
+  setTimeout(()=>speak(q.word),450);
   document.getElementById('rimeBlank').textContent='___';
   document.getElementById('rimeBlank').classList.remove('filled');
   document.getElementById('rimeText').textContent=q.rime;
@@ -238,6 +246,7 @@ function choose(btn,onset,q){
       const fm=document.getElementById('fusionMsg');
       fm.textContent=`${onset} + ${q.rime} = ${q.word}! 🎉`;
       fm.classList.add('pop');
+      speak(q.word);
     },300);
     document.getElementById('statusMsg').textContent='';
     soundCorrect();
@@ -247,7 +256,7 @@ function choose(btn,onset,q){
       if(b.textContent===q.onset)b.classList.add('correct');
     });
     document.getElementById('statusMsg').textContent=`❌ It's ${q.onset} + ${q.rime} = ${q.word}`;
-    soundWrong();
+    soundWrong();setTimeout(()=>speak(q.word),400);
   }
   setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);
 }
