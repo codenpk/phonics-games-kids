@@ -87,6 +87,12 @@
     .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
     .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
     @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  
+    .game-info{background:rgba(0,0,0,.06);border-radius:14px;padding:14px 16px;margin-bottom:18px;text-align:left}
+    .game-info-row{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;color:#374151;line-height:1.45;margin-bottom:8px}
+    .game-info-row:last-child{margin-bottom:0}
+    .game-info-icon{font-size:1rem;flex-shrink:0;width:1.2em;text-align:center}
+    .game-info-text b{color:#111}
   </style>
 </head>
 <body>
@@ -103,6 +109,11 @@
 
 <div class="card" id="pickScreen">
   <div class="pick-heading">Choose your level</div>
+  <div class="game-info">
+    <div class="game-info-row"><span class="game-info-icon">🎮</span><span class="game-info-text"><b>What:</b> A vowel-filling game — choose the vowel that completes the word shown with a blank.</span></div>
+    <div class="game-info-row"><span class="game-info-icon">👆</span><span class="game-info-text"><b>How to play:</b> You see a frame like C_T or FR_G. Tap A, E, I, O, or U to fill the blank and make a real word.</span></div>
+    <div class="game-info-row"><span class="game-info-icon">🧠</span><span class="game-info-text"><b>Helps with:</b> Vowel-grapheme mapping — vowels are the trickiest letters because they each make multiple sounds. This builds solid vowel-to-spelling connections.</span></div>
+  </div>
   <div class="pick-btns">
     <button class="pick-btn btn-easy" onclick="startGame('easy')">
       <span class="pick-icon">⭐</span>
