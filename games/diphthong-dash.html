@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Diphthong Dash</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
+      background:linear-gradient(135deg,#e0f2fe 0%,#38bdf8 50%,#0369a1 100%);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 10px 30px}
+    .top-bar{width:100%;max-width:580px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .back-link{background:rgba(255,255,255,.85);border:none;border-radius:20px;padding:6px 14px;
+      font-family:inherit;font-size:.85rem;font-weight:bold;color:#0c4a6e;cursor:pointer;text-decoration:none}
+    .score-badge{background:rgba(255,255,255,.88);border-radius:14px;padding:6px 16px;
+      font-size:.88rem;font-weight:bold;color:#555}
+    .score-badge span{color:#0369a1;font-size:1.05rem}
+    h1{font-size:1.55rem;color:#fff;text-shadow:2px 2px 0 #0c4a6e;margin-bottom:4px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center;min-height:1.2em}
+    .progress-wrap{width:100%;max-width:580px;margin-bottom:12px}
+    .progress-track{height:9px;background:rgba(255,255,255,.35);border-radius:5px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#bae6fd,#0369a1);border-radius:5px;transition:width .4s;width:0%}
+    .progress-label{font-size:.7rem;color:rgba(255,255,255,.85);text-align:right;margin-top:2px}
+    .card{background:rgba(255,255,255,.97);border-radius:22px;padding:22px 18px 20px;
+      box-shadow:0 8px 30px rgba(0,0,0,.13);width:100%;max-width:580px}
+
+    #pickScreen{text-align:center}
+    .pick-heading{font-size:1.1rem;font-weight:bold;color:#0c4a6e;margin-bottom:18px}
+    .pick-btns{display:flex;flex-direction:column;gap:12px}
+    .pick-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:inherit;
+      display:flex;align-items:center;gap:14px;text-align:left;transition:transform .12s}
+    .pick-btn:hover{transform:translateY(-2px)}
+    .pick-btn:active{transform:translateY(2px)}
+    .pick-icon{font-size:1.8rem;flex-shrink:0}
+    .pick-info{flex:1}
+    .pick-name{font-size:1.05rem;font-weight:bold;display:block;margin-bottom:2px}
+    .pick-desc{font-size:.75rem;opacity:.8;display:block}
+    .btn-easy  {background:linear-gradient(135deg,#d1fae5,#6ee7b7);color:#065f46;box-shadow:0 5px 0 #047857}
+    .btn-medium{background:linear-gradient(135deg,#e0f2fe,#7dd3fc);color:#0c4a6e;box-shadow:0 5px 0 #0369a1}
+    .btn-hard  {background:linear-gradient(135deg,#fce7f3,#f9a8d4);color:#831843;box-shadow:0 5px 0 #be185d}
+
+    .prompt{text-align:center;font-size:.78rem;font-weight:bold;color:#0369a1;
+      text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+    .stimulus{text-align:center;margin-bottom:18px;padding:18px;
+      background:linear-gradient(135deg,#e0f2fe,#bae6fd);border-radius:16px;border:2px solid #7dd3fc}
+    .stim-emoji{font-size:3.5rem;display:block;line-height:1;margin-bottom:8px}
+    .stim-word{font-size:2rem;font-weight:bold;color:#1f2937;display:block}
+
+    .buckets{display:grid;gap:10px;margin-bottom:14px}
+    .buckets-2{grid-template-columns:1fr 1fr}
+    .buckets-4{grid-template-columns:1fr 1fr}
+    .bucket-btn{border:none;border-radius:16px;cursor:pointer;font-family:inherit;
+      padding:18px 10px;font-size:1.5rem;font-weight:bold;color:#fff;
+      transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px}
+    .bucket-btn:hover{transform:translateY(-3px)}
+    .bucket-btn:active{transform:translateY(3px)}
+    .bucket-btn:disabled{cursor:default;opacity:.65}
+    .bucket-rule{font-size:.62rem;opacity:.88;font-weight:normal;text-align:center;line-height:1.3}
+    .bkt-oi{background:linear-gradient(135deg,#fde68a,#f59e0b);box-shadow:0 5px 0 #92400e;color:#1f2937}
+    .bkt-oy{background:linear-gradient(135deg,#fca5a5,#ef4444);box-shadow:0 5px 0 #991b1b}
+    .bkt-ou{background:linear-gradient(135deg,#6ee7b7,#059669);box-shadow:0 5px 0 #064e3b}
+    .bkt-ow{background:linear-gradient(135deg,#93c5fd,#2563eb);box-shadow:0 5px 0 #1e3a8a}
+    .bucket-btn.correct{outline:4px solid #fbbf24;animation:popIn .4s}
+    .bucket-btn.wrong{animation:shakeBtn .4s}
+    @keyframes popIn{0%{transform:scale(.9)}60%{transform:scale(1.07)}100%{transform:scale(1)}}
+    @keyframes shakeBtn{0%,100%{transform:translateX(0)}25%,75%{transform:translateX(-8px)}50%{transform:translateX(8px)}}
+
+    .rule-tip{display:none;text-align:center;background:linear-gradient(135deg,#e0f2fe,#bae6fd);
+      border-radius:12px;padding:8px 14px;font-size:.8rem;font-weight:bold;color:#0c4a6e;margin-bottom:10px}
+    .status-msg{min-height:26px;text-align:center;font-size:.9rem;font-weight:bold;color:#0369a1;margin-bottom:8px}
+    .btn-next-wrap{text-align:center}
+    .btn-next{background:linear-gradient(135deg,#0369a1,#075985);color:#fff;border:none;
+      border-radius:14px;padding:12px 30px;font-family:inherit;font-size:1rem;font-weight:bold;
+      cursor:pointer;box-shadow:0 5px 0 #0c4a6e;transition:all .15s;display:none}
+    .btn-next:hover{transform:translateY(-2px)}
+    .btn-next:active{transform:translateY(3px);box-shadow:0 2px 0 #0c4a6e}
+
+    .done-screen{display:none;text-align:center}
+    .done-emoji{font-size:4.5rem;display:block;margin-bottom:14px}
+    .done-title{font-size:2rem;color:#0c4a6e;font-weight:bold;margin-bottom:8px}
+    .done-score{font-size:1.1rem;color:#555;margin-bottom:6px}
+    .done-level{font-size:.82rem;color:#6b7280;margin-bottom:20px}
+    .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
+    .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <a class="back-link" href="../launcher.html">← All Games</a>
+  <div class="score-badge">🌊 <span id="score">0</span> pts</div>
+</div>
+<h1>🌊 Diphthong Dash</h1>
+<p class="subtitle" id="subtitle">Sort the word into the right sound bucket!</p>
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel"></div>
+</div>
+
+<div class="card" id="pickScreen">
+  <div class="pick-heading">Choose your level</div>
+  <div class="pick-btns">
+    <button class="pick-btn btn-easy" onclick="startGame('easy')">
+      <span class="pick-icon">⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Easy — OI vs OY</span>
+        <span class="pick-desc">COIN vs BOY — same /oi/ sound, different spelling. OI in the middle, OY at the end!</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-medium" onclick="startGame('medium')">
+      <span class="pick-icon">⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Medium — OU vs OW</span>
+        <span class="pick-desc">CLOUD vs COW — same /ow/ sound! SHOUT, MOUSE, TOWN, CROWN…</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-hard" onclick="startGame('hard')">
+      <span class="pick-icon">⭐⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Hard — all 4 patterns!</span>
+        <span class="pick-desc">OI · OY · OU · OW — four buckets, mixed words!</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<div class="card" id="gameCard" style="display:none">
+  <div class="prompt">Which pattern is in this word?</div>
+  <div class="stimulus">
+    <span class="stim-emoji" id="stimEmoji"></span>
+    <span class="stim-word" id="stimWord"></span>
+  </div>
+  <div class="buckets" id="bucketsGrid"></div>
+  <div class="rule-tip" id="ruleTip"></div>
+  <div class="status-msg" id="statusMsg"></div>
+  <div class="btn-next-wrap">
+    <button class="btn-next" id="btnNext" onclick="nextQ()">Next ➡</button>
+  </div>
+</div>
+
+<div class="card done-screen" id="doneScreen">
+  <span class="done-emoji">🌊</span>
+  <div class="done-title" id="doneTitle">Amazing!</div>
+  <div class="done-score" id="doneScore"></div>
+  <div class="done-level" id="doneLevel"></div>
+  <button class="btn-next" style="display:inline-block" onclick="restart()">Play Again 🔄</button>
+  <br><a class="back-link" style="margin-top:14px;display:inline-block" href="../launcher.html">← All Games</a>
+</div>
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<script src="../data/diphthongs.js"></script>
+<script>
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function getAC(){if(!ac&&AC)ac=new AC();return ac;}
+function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=t;o.frequency.value=f;const s=ctx.currentTime+del;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.start(s);o.stop(s+d);}catch(e){}}
+function soundCorrect(){playTone(880,'sine',.15,.2);playTone(1100,'sine',.15,.18,.1);}
+function soundWrong(){playTone(200,'sawtooth',.3,.12);}
+function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#0369a1','#38bdf8','#fbbf24','#22c55e','#a855f7'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2200);}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+const SETTINGS={
+  easy:  {tiers:[1],   patterns:['OI','OY'],           limit:14, label:'⭐ Easy (OI/OY)'},
+  medium:{tiers:[2],   patterns:['OU','OW'],           limit:14, label:'⭐⭐ Medium (OU/OW)'},
+  hard:  {tiers:[3],   patterns:['OI','OY','OU','OW'], limit:16, label:'⭐⭐⭐ Hard (all 4)'},
+};
+const BUCKET_CONFIG={
+  OI:{label:'OI',cls:'bkt-oi',rule:'middle of word\n(coin, boil, oil)'},
+  OY:{label:'OY',cls:'bkt-oy',rule:'end of word\n(boy, enjoy, toy)'},
+  OU:{label:'OU',cls:'bkt-ou',rule:'/ow/ sound\n(cloud, shout, mouse)'},
+  OW:{label:'OW',cls:'bkt-ow',rule:'/ow/ sound\n(cow, town, crown)'},
+};
+
+let difficulty,questions=[],qi=0,score=0,currentQ=null,activePatterns=[];
+
+function startGame(diff){
+  difficulty=diff;
+  const s=SETTINGS[diff];
+  activePatterns=s.patterns;
+  const pool=window.DIPHTHONGS.filter(q=>s.tiers.includes(q.tier??1));
+  questions=shuffle(pool).slice(0,s.limit);
+  qi=0;score=0;
+  document.getElementById('score').textContent='0';
+  document.getElementById('pickScreen').style.display='none';
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('subtitle').textContent=`${s.label} — tap the right bucket!`;
+  showQ();
+}
+
+function showQ(){
+  const q=questions[qi];
+  currentQ=q;
+  document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
+  document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
+  document.getElementById('stimEmoji').textContent=q.emoji;
+  document.getElementById('stimWord').textContent=q.word;
+  document.getElementById('statusMsg').textContent='';
+  document.getElementById('btnNext').style.display='none';
+  document.getElementById('ruleTip').style.display='none';
+
+  const grid=document.getElementById('bucketsGrid');
+  grid.className='buckets '+(activePatterns.length<=2?'buckets-2':'buckets-4');
+  grid.innerHTML='';
+  activePatterns.forEach(pat=>{
+    const cfg=BUCKET_CONFIG[pat];
+    const btn=document.createElement('button');
+    btn.className=`bucket-btn ${cfg.cls}`;
+    btn.setAttribute('aria-label',pat);
+    btn.innerHTML=`${pat}<span class="bucket-rule">${cfg.rule}</span>`;
+    btn.onclick=()=>choose(btn,pat,q);
+    grid.appendChild(btn);
+  });
+}
+
+function choose(btn,pat,q){
+  document.querySelectorAll('.bucket-btn').forEach(b=>b.disabled=true);
+  const correct=pat===q.pattern;
+  const tip=document.getElementById('ruleTip');
+  if(correct){
+    btn.classList.add('correct');
+    score+=10;
+    document.getElementById('score').textContent=score;
+    document.getElementById('statusMsg').textContent=`✅ ${q.word} has ${q.pattern}!`;
+    tip.textContent=`📖 "${q.word}" — the ${q.pattern} makes the /oi/ or /ow/ sound!`;
+    tip.style.display='block';
+    soundCorrect();
+    setTimeout(()=>nextQ(),900);
+  }else{
+    btn.classList.add('wrong');
+    document.querySelectorAll('.bucket-btn').forEach(b=>{if(b.getAttribute('aria-label')===q.pattern)b.classList.add('correct');});
+    document.getElementById('statusMsg').textContent=`❌ "${q.word}" has ${q.pattern}, not ${pat}!`;
+    tip.textContent=`📖 Look for the letters ${q.pattern} inside "${q.word}"!`;
+    tip.style.display='block';
+    soundWrong();
+    setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);
+  }
+}
+
+function nextQ(){qi++;if(qi>=questions.length)showDone();else showQ();}
+
+function showDone(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='block';
+  document.getElementById('progressFill').style.width='100%';
+  const total=questions.length,pct=Math.round(score/total/10*100);
+  document.getElementById('doneScore').textContent=`You scored ${score} out of ${total*10} points (${pct}%)!`;
+  document.getElementById('doneLevel').textContent=`Level: ${SETTINGS[difficulty].label}`;
+  document.getElementById('doneTitle').textContent=pct>=90?'Amazing! 🌟':pct>=70?'Brilliant! 🎉':pct>=50?'Good job! 👍':'Keep practising! 💪';
+  soundWin();confetti();
+}
+
+function restart(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('pickScreen').style.display='block';
+  document.getElementById('subtitle').textContent='Sort the word into the right sound bucket!';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('progressLabel').textContent='';
+}
+</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{});</script>
+</body>
+</html>

@@ -411,7 +411,7 @@ Games progress from the simplest phonics concepts (letter recognition) to advanc
 
 ---
 
-## Game 8: I Spy Phonics
+## Game 8: I Spy Phonics ✅ BUILT
 **Theme:** 🌈 Classroom/Home | **Age:** 4–5 | **Level:** Beginner
 **Objective:** Listen for the target beginning sound and identify objects in the environment.
 **Skills:** Phoneme isolation (initial), listening, vocabulary, environmental print awareness
@@ -687,7 +687,7 @@ Games progress from the simplest phonics concepts (letter recognition) to advanc
 
 ---
 
-## Game 13: ABC Clothesline Race
+## Game 13: ABC Clothesline Race ✅ BUILT
 **Theme:** 🌤️ Laundry / Outdoors | **Age:** 4–6 | **Level:** Beginner
 **Objective:** Hang letter cards on a clothesline in alphabetical order — tactile ABC sequencing.
 **Skills:** Alphabet order, letter recognition, sequencing, fine motor (using pegs)
@@ -1176,7 +1176,7 @@ Games progress from the simplest phonics concepts (letter recognition) to advanc
 
 ---
 
-## Game 22: Vowel Swap
+## Game 22: Vowel Swap ✅ BUILT
 **Theme:** 🔄 Science Lab | **Age:** 5–7 | **Level:** Intermediate
 **Objective:** Change the middle vowel to make new words from the same consonant frame — flexible vowel discrimination.
 **Skills:** Medial vowel discrimination, word families, phoneme manipulation, reading fluency
@@ -1245,7 +1245,7 @@ Games progress from the simplest phonics concepts (letter recognition) to advanc
 
 ---
 
-## Game 23: Digraph Detective
+## Game 23: Digraph Detective ✅ BUILT
 **Theme:** 🔎 Detectives | **Age:** 5–7 | **Level:** Intermediate
 **Objective:** Identify which digraph is hiding at the beginning, middle, or end of a spoken word — digraph recognition through listening.
 **Skills:** Digraph identification, phoneme isolation, listening, spelling awareness
@@ -1531,7 +1531,7 @@ Games progress from the simplest phonics concepts (letter recognition) to advanc
 
 ---
 
-## Game 28: Blend Blastoff
+## Game 28: Blend Blastoff ✅ BUILT
 **Theme:** 🚀 Space | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Read blend words before the rocket launches — timed blend decoding that builds automaticity.
 **Skills:** Initial blend decoding (st, tr, fl, cl, br, gr, pl, sl, cr, dr), reading speed, focus under pressure
@@ -1885,7 +1885,7 @@ Card: SHIP. Player: "SH — hmm… two letters but ONE sound — SINGLE!" ✓ (t
 
 ---
 
-## Game 34: Vowel Valley Sort
+## Game 34: Vowel Valley Sort ✅ BUILT
 **Theme:** 🏔️ Nature | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Sort picture/word cards into "Short Vowel Valley" or "Long Vowel Mountain" — the foundational vowel contrast.
 **Skills:** Long vs short vowel discrimination, vowel sound identification, categorisation
@@ -1939,7 +1939,7 @@ Card: SHIP. Player: "SH — hmm… two letters but ONE sound — SINGLE!" ✓ (t
 
 ---
 
-## Game 35: Long or Short Vowel Toss
+## Game 35: Long or Short Vowel Toss ✅ BUILT
 **Theme:** 🎯 Carnival | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Toss a beanbag into the correct vowel bucket when a word is called — kinesthetic vowel discrimination.
 **Skills:** Long/short vowel identification, listening, gross motor, reaction speed
@@ -2051,7 +2051,7 @@ Card: SHIP. Player: "SH — hmm… two letters but ONE sound — SINGLE!" ✓ (t
 
 ---
 
-## Game 37: Magic E Wand
+## Game 37: Magic E Wand ✅ BUILT
 **Theme:** ✨ Magic | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Add a silent E to CVC words and watch them transform — understanding the CVCe pattern through dramatic transformation.
 **Skills:** CVCe pattern, long vowel production, word transformation, encoding
@@ -2105,7 +2105,7 @@ Card: SHIP. Player: "SH — hmm… two letters but ONE sound — SINGLE!" ✓ (t
 
 ---
 
-## Game 38: E Eraser
+## Game 38: E Eraser ✅ BUILT
 **Theme:** 🧹 Clean-Up | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Remove the silent E from CVCe words and identify the resulting short-vowel CVC word — reverse of Magic E.
 **Skills:** CVCe decoding, phoneme deletion, CVC recall, word transformation (reverse direction)
@@ -2164,7 +2164,7 @@ Card: SHIP. Player: "SH — hmm… two letters but ONE sound — SINGLE!" ✓ (t
 
 ---
 
-## Game 39: Bossy R Roundup
+## Game 39: Bossy R Roundup ✅ BUILT
 **Theme:** 🤠 Wild West | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Sort r-controlled vowel words into the correct ranch (ar, or, er, ir, ur) — the Bossy R takes control of the vowel sound.
 **Skills:** R-controlled vowel identification, sorting, phoneme categorisation, reading fluency
@@ -2388,7 +2388,7 @@ Highlighted: farmer (AR), worked (OR? — no, ER), hard (AR), her (ER), farm (AR
 
 ---
 
-## Game 43: OI/OY Coin Toss
+## Game 43: OI/OY Coin Toss ✅ BUILT
 **Theme:** 🪙 Carnival | **Age:** 6–8 | **Level:** Advanced
 **Objective:** Sort OI and OY words while also learning the positional rule (OI = middle; OY = end of word).
 **Skills:** OI/OY diphthong recognition, positional spelling rule, word reading, pattern generalisation
@@ -2441,7 +2441,7 @@ Highlighted: farmer (AR), worked (OR? — no, ER), hard (AR), her (ER), farm (AR
 
 ---
 
-## Game 44: OU/OW Rainstorm
+## Game 44: OU/OW Rainstorm ✅ BUILT
 **Theme:** 🌧️ Weather | **Age:** 6–8 | **Level:** Advanced
 **Objective:** Sort OU and OW words (both making /aʊ/) into the correct cloud — same sound, different spelling.
 **Skills:** OU/OW diphthong spelling, same-sound-different-spelling awareness, word reading, pattern memory
@@ -2552,7 +2552,7 @@ Highlighted: farmer (AR), worked (OR? — no, ER), hard (AR), her (ER), farm (AR
 
 ---
 
-## Game 46: Sight Word Speedway
+## Game 46: Sight Word Speedway ✅ BUILT
 **Theme:** 🏎️ Racing | **Age:** 5–7 | **Level:** Beginner–Intermediate
 **Objective:** Read sight words as fast as possible — building the instant, automatic recognition that underpins reading fluency.
 **Skills:** Sight word automaticity, reading speed, focus, word recognition
@@ -2717,7 +2717,7 @@ Highlighted: farmer (AR), worked (OR? — no, ER), hard (AR), her (ER), farm (AR
 
 ---
 
-## Game 49: Rhyme Time Basket
+## Game 49: Rhyme Time Basket ✅ BUILT
 **Theme:** 🧺 Garden | **Age:** 4–6 | **Level:** Beginner
 **Objective:** Sort picture cards into rhyming baskets — auditory rhyme recognition through categorisation.
 **Skills:** Rhyme recognition, phonological awareness, listening, vocabulary
@@ -2770,7 +2770,7 @@ Highlighted: farmer (AR), worked (OR? — no, ER), hard (AR), her (ER), farm (AR
 
 ---
 
-## Game 50: Odd One Out Rhyming
+## Game 50: Odd One Out Rhyming ✅ BUILT
 **Theme:** 🎭 Game Show | **Age:** 4–6 | **Level:** Beginner
 **Objective:** Identify the one word in a group of four that does NOT rhyme with the others — critical phonological listening.
 **Skills:** Rhyme discrimination, phonological awareness, critical listening, inhibitory control
@@ -2877,7 +2877,7 @@ Set: SHIP, TIP, CAT, DIP. Odd one out: CAT.
 
 ---
 
-## Game 52: Rhyme or Reason?
+## Game 52: Rhyme or Reason? ✅ BUILT
 **Theme:** 🔬 Science Lab | **Age:** 5–7 | **Level:** Intermediate
 **Objective:** Rapidly judge whether two words rhyme or not — binary discrimination at speed for phonological automaticity.
 **Skills:** Rhyme discrimination, listening, rapid decision-making, phonological automaticity
@@ -2935,7 +2935,7 @@ Set: SHIP, TIP, CAT, DIP. Odd one out: CAT.
 
 ---
 
-## Game 53: Clap It Out
+## Game 53: Clap It Out ✅ BUILT
 **Theme:** 🎵 Music | **Age:** 5–7 | **Level:** Beginner
 **Objective:** Clap the syllables in spoken words — foundational syllable-counting through body percussion.
 **Skills:** Syllable segmentation, phonological awareness, auditory processing, rhythm
@@ -3094,7 +3094,7 @@ Set: SHIP, TIP, CAT, DIP. Odd one out: CAT.
 
 ---
 
-## Game 56: Compound Word Splitter
+## Game 56: Compound Word Splitter ✅ BUILT
 **Theme:** 🔪 Kitchen | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Split compound words into their two component words — understanding that compounds = two real words joined.
 **Skills:** Compound word awareness, vocabulary, morphological knowledge, syllabification
@@ -3426,7 +3426,7 @@ Correct voices: steady stop (.) → loud surprise (!) → rising question (?) �
 
 ---
 
-## Game 62: Spelling Bee Junior
+## Game 62: Spelling Bee Junior ✅ BUILT
 **Theme:** 🐝 Garden | **Age:** 6–8 | **Level:** Intermediate
 **Objective:** Spell words aloud in a friendly competitive format — oral spelling practice with social motivation.
 **Skills:** Spelling, letter sequence recall, phoneme-grapheme correspondence, confidence, oral language
@@ -3480,7 +3480,7 @@ Correct voices: steady stop (.) → loud surprise (!) → rising question (?) �
 
 ---
 
-## Game 63: Word Ladder
+## Game 63: Word Ladder ✅ BUILT
 **Theme:** 🧗 Climbing | **Age:** 6–8 | **Level:** Advanced
 **Objective:** Change one letter at a time to climb from one word to another — spelling through minimal-pair transformations.
 **Skills:** Spelling, phoneme substitution, word families, problem-solving, vocabulary
