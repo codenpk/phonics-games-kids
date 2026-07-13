@@ -30,7 +30,7 @@ window.ENDING_SOUNDS = [
 
   {tier:1, target:{emoji:"☀️",word:"SUN"}, sound:"/n/",
     answer:{emoji:"🍞",word:"BUN"},
-    distractors:[{emoji:"🏃",word:"RUN"},{emoji:"🐛",word:"BUG"}]},
+    distractors:[{emoji:"🐱",word:"CAT"},{emoji:"🐛",word:"BUG"}]},
 
   // ends in /p/
   {tier:1, target:{emoji:"🗺️",word:"MAP"}, sound:"/p/",
@@ -38,8 +38,8 @@ window.ENDING_SOUNDS = [
     distractors:[{emoji:"🐱",word:"CAT"},{emoji:"🌀",word:"FAN"}]},
 
   {tier:1, target:{emoji:"☕",word:"CUP"}, sound:"/p/",
-    answer:{emoji:"🛁",word:"TUB"},
-    distractors:[{emoji:"🎯",word:"TOP"},{emoji:"🐛",word:"BUG"}]},
+    answer:{emoji:"🎯",word:"TOP"},
+    distractors:[{emoji:"🛁",word:"TUB"},{emoji:"🐛",word:"BUG"}]},
 
   // ends in /k/
   {tier:1, target:{emoji:"🕐",word:"CLOCK"}, sound:"/k/",
