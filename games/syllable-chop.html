@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Syllable Chop</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
+      background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 10px 30px}
+    .top-bar{width:100%;max-width:580px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .back-link{background:rgba(255,255,255,.85);border:none;border-radius:20px;padding:6px 14px;
+      font-family:inherit;font-size:.85rem;font-weight:bold;color:#1e3a8a;cursor:pointer;text-decoration:none}
+    .score-badge{background:rgba(255,255,255,.88);border-radius:14px;padding:6px 16px;
+      font-size:.88rem;font-weight:bold;color:#555}
+    .score-badge span{color:#d97706;font-size:1.05rem}
+    h1{font-size:1.6rem;color:#f59e0b;text-shadow:2px 2px 0 #92400e;margin-bottom:4px;letter-spacing:1px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.85);font-size:.82rem;margin-bottom:10px;text-align:center;min-height:1.2em}
+    .progress-wrap{width:100%;max-width:580px;margin-bottom:12px}
+    .progress-track{height:9px;background:rgba(255,255,255,.2);border-radius:5px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#d97706);border-radius:5px;transition:width .4s ease;width:0%}
+    .progress-label{font-size:.7rem;color:rgba(255,255,255,.7);text-align:right;margin-top:2px}
+    .card{background:rgba(255,255,255,.97);border-radius:22px;padding:22px 18px 20px;
+      box-shadow:0 8px 30px rgba(0,0,0,.35);width:100%;max-width:580px}
+
+    /* ── Difficulty picker ── */
+    #pickScreen{text-align:center}
+    .pick-heading{font-size:1.1rem;font-weight:bold;color:#1e3a8a;margin-bottom:18px}
+    .game-emoji{font-size:3.5rem;margin-bottom:8px;line-height:1}
+    .game-desc{font-size:.9rem;color:#374151;margin-bottom:16px}
+    .game-info{background:rgba(0,0,0,.06);border-radius:14px;padding:14px 16px;margin-bottom:18px;text-align:left}
+    .game-info-row{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;color:#374151;line-height:1.45;margin-bottom:8px}
+    .game-info-row:last-child{margin-bottom:0}
+    .pick-btns{display:flex;flex-direction:column;gap:12px}
+    .pick-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:inherit;
+      font-size:.95rem;font-weight:bold;text-align:center;transition:transform .12s ease,box-shadow .12s ease}
+    .pick-btn:hover{transform:translateY(-2px)}
+    .pick-btn:active{transform:translateY(2px)}
+    .btn-easy{background:linear-gradient(135deg,#d1fae5,#6ee7b7);color:#065f46;box-shadow:0 5px 0 #047857}
+    .btn-medium{background:linear-gradient(135deg,#ede9fe,#c4b5fd);color:#4c1d95;box-shadow:0 5px 0 #6d28d9}
+    .btn-hard{background:linear-gradient(135deg,#fef3c7,#fcd34d);color:#78350f;box-shadow:0 5px 0 #92400e}
+
+    /* ── Game card ── */
+    .prompt{text-align:center;font-size:.8rem;font-weight:bold;color:#1e3a8a;
+      text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+    .stimulus{text-align:center;margin-bottom:22px}
+    .stim-emoji{font-size:4rem;display:block;line-height:1;margin-bottom:8px}
+    .stim-word{font-size:2rem;font-weight:bold;color:#1f2937;letter-spacing:4px;margin-bottom:6px}
+    .speak-btn{background:rgba(30,58,138,.12);border:none;border-radius:50%;width:38px;height:38px;
+      font-size:1.15rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+      margin:0 auto;transition:transform .1s ease}
+    .speak-btn:hover{transform:scale(1.15)}
+
+    /* ── Chop buttons ── */
+    #chopChoices{margin-bottom:14px}
+    .chop-btn{display:block;width:100%;border:none;border-radius:14px;padding:16px;
+      font-family:inherit;font-size:1.3rem;font-weight:bold;letter-spacing:3px;cursor:pointer;
+      background:rgba(255,255,255,.92);color:#1f2937;margin-bottom:10px;
+      box-shadow:0 4px 0 rgba(0,0,0,.2);transition:all .15s ease;
+      border:3px solid transparent}
+    .chop-btn:hover{transform:translateY(-2px)}
+    .chop-btn:active{transform:translateY(2px)}
+    .chop-btn.correct{background:linear-gradient(135deg,#d1fae5,#6ee7b7);border:3px solid #22c55e}
+    .chop-btn.wrong{background:linear-gradient(135deg,#fee2e2,#fca5a5);border:3px solid #ef4444;animation:shake .4s ease}
+    .chop-btn:disabled{cursor:default}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%,75%{transform:translateX(-8px)}50%{transform:translateX(8px)}}
+    .chop-dot{color:#f59e0b;font-size:1.6rem;font-weight:bold}
+
+    .status-msg{min-height:26px;text-align:center;font-size:.92rem;font-weight:bold;color:#1e3a8a;margin-bottom:12px}
+    .btn-next-wrap{text-align:center}
+    .btn-next{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;
+      border-radius:14px;padding:12px 30px;font-family:inherit;font-size:1rem;font-weight:bold;
+      cursor:pointer;box-shadow:0 5px 0 #92400e;transition:all .15s ease;display:none}
+    .btn-next:hover{transform:translateY(-2px)}
+    .btn-next:active{transform:translateY(3px);box-shadow:0 2px 0 #92400e}
+
+    /* ── Done screen ── */
+    .done-screen{display:none;text-align:center}
+    .done-emoji{font-size:4.5rem;display:block;margin-bottom:14px}
+    .done-title{font-size:2rem;color:#1e3a8a;font-weight:bold;margin-bottom:8px}
+    .done-score{font-size:1.1rem;color:#555;margin-bottom:6px}
+    .done-level{font-size:.82rem;color:#6b7280;margin-bottom:20px}
+    .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
+    .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <a class="back-link" href="../launcher.html">← All Games</a>
+  <div class="score-badge">🥋 <span id="score">0</span> pts</div>
+</div>
+<h1>🥋 Syllable Chop</h1>
+<p class="subtitle" id="subtitle">Karate chop each word at the right syllable break!</p>
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel"></div>
+</div>
+
+<!-- Difficulty picker -->
+<div class="card" id="pickScreen">
+  <div class="game-emoji">🥋</div>
+  <h1 style="color:#1e3a8a;text-shadow:none;margin-bottom:8px">Syllable Chop</h1>
+  <p class="game-desc">Karate chop each word at the right syllable break!</p>
+  <div class="game-info">
+    <div class="game-info-row">🥋 <b>What:</b> Multi-syllable words have natural break points</div>
+    <div class="game-info-row">👆 <b>How:</b> Tap where the word should be chopped: RUB·BER, not R·UBBER!</div>
+    <div class="game-info-row">🧠 <b>Helps:</b> Reading longer words by breaking them into parts</div>
+  </div>
+  <div class="pick-btns">
+    <button class="pick-btn btn-easy" onclick="startGame('easy')">⭐ Easy — 2-syllable words (VC·CV)</button>
+    <button class="pick-btn btn-medium" onclick="startGame('medium')">⭐⭐ Medium — Mixed patterns</button>
+    <button class="pick-btn btn-hard" onclick="startGame('hard')">⭐⭐⭐ Hard — 3-syllable words!</button>
+  </div>
+</div>
+
+<!-- Game card -->
+<div class="card" id="gameCard" style="display:none">
+  <div class="prompt">🥋 Chop at the right syllable break!</div>
+  <div class="stimulus">
+    <span class="stim-emoji" id="stimEmoji"></span>
+    <div class="stim-word" id="stimWord"></div>
+    <button class="speak-btn" onclick="speak(document.getElementById('stimWord').textContent)">🔊</button>
+  </div>
+  <div id="chopChoices"></div>
+  <div class="status-msg" id="statusMsg"></div>
+  <div class="btn-next-wrap">
+    <button class="btn-next" id="btnNext" onclick="nextQ()">Next ➡</button>
+  </div>
+</div>
+
+<!-- Done screen -->
+<div class="card done-screen" id="doneScreen">
+  <span class="done-emoji">🥋</span>
+  <div class="done-title" id="doneTitle">Karate Champion!</div>
+  <div class="done-score" id="doneScore"></div>
+  <div class="done-level" id="doneLevel"></div>
+  <button class="btn-next" style="display:inline-block" onclick="restart()">Play Again 🔄</button>
+  <br><a class="back-link" style="margin-top:14px;display:inline-block" href="../launcher.html">← All Games</a>
+</div>
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<script src="../data/tracker.js"></script>
+<script src="../data/syllable-chop.js"></script>
+<script>
+// ── Audio ──
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function getAC(){if(!ac&&AC)ac=new AC();return ac;}
+function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=t;o.frequency.value=f;const s=ctx.currentTime+del;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.start(s);o.stop(s+d);}catch(e){}}
+function soundCorrect(){playTone(523,'sine',.1,.2);playTone(659,'sine',.1,.18,.1);playTone(784,'sine',.12,.18,.2);playTone(1047,'sine',.15,.18,.3);}
+function soundWrong(){playTone(200,'sawtooth',.3,.12);}
+function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+
+// ── TTS ──
+function speak(text){
+  if(!text||!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text.toLowerCase());
+  u.rate=0.82;u.pitch=1.05;
+  window.speechSynthesis.speak(u);
+}
+
+// ── Confetti ──
+function confetti(){
+  const w=document.getElementById('confettiWrap');w.innerHTML='';
+  const cols=['#f59e0b','#d97706','#1e3a8a','#3b82f6','#ef4444'];
+  for(let i=0;i<60;i++){
+    const p=document.createElement('div');p.className='confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;
+    w.appendChild(p);
+  }
+  setTimeout(()=>w.innerHTML='',2200);
+}
+
+// ── Fisher-Yates shuffle ──
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+// ── Settings ──
+const SETTINGS={
+  easy:  {tiers:[1],     limit:12, label:'⭐ Easy'},
+  medium:{tiers:[1,2],   limit:20, label:'⭐⭐ Medium'},
+  hard:  {tiers:[1,2,3], limit:28, label:'⭐⭐⭐ Hard'},
+};
+
+let difficulty='easy',questions=[],qi=0,score=0,_qStart=0,_firstTry=true;
+
+// ── Start game ──
+function startGame(diff){
+  difficulty=diff;
+  const s=SETTINGS[diff];
+  const pool=window.SYLLABLE_CHOP.filter(q=>s.tiers.includes(q.tier??1));
+  questions=shuffle(pool).slice(0,s.limit);
+  qi=0;score=0;
+  document.getElementById('score').textContent='0';
+  document.getElementById('pickScreen').style.display='none';
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('subtitle').textContent=`${s.label} — Chop at the right break!`;
+  showQ();
+}
+
+// ── Show question ──
+function showQ(){
+  _qStart=Date.now();_firstTry=true;
+  const q=questions[qi];
+  document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
+  document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
+  document.getElementById('stimEmoji').textContent=q.emoji;
+  document.getElementById('stimWord').textContent=q.word;
+  setTimeout(()=>speak(q.word),450);
+  document.getElementById('statusMsg').textContent='';
+  document.getElementById('btnNext').style.display='none';
+
+  const choices=shuffle([q.syllables,...q.wrong]);
+  const container=document.getElementById('chopChoices');
+  container.innerHTML='';
+  choices.forEach(choice=>{
+    const btn=document.createElement('button');
+    btn.className='chop-btn';
+    btn.dataset.choice=choice;
+    btn.innerHTML=choice.replace(/·/g,'<span class="chop-dot">·</span>');
+    btn.onclick=()=>choose(btn,choice,q);
+    container.appendChild(btn);
+  });
+}
+
+// ── Handle choice ──
+function choose(btn,choice,q){
+  document.querySelectorAll('.chop-btn').forEach(b=>b.disabled=true);
+  const correct=choice===q.syllables;
+  if(correct){
+    btn.classList.add('correct');
+    score+=10;
+    document.getElementById('score').textContent=score;
+    speak(q.word);
+    document.getElementById('statusMsg').textContent=`🥋 ${q.syllables} — perfect chop!`;
+    Tracker.record('syllable-chop',q.word,true,_firstTry,Date.now()-_qStart);
+    soundCorrect();
+  }else{
+    btn.classList.add('wrong');
+    document.querySelectorAll('.chop-btn').forEach(b=>{
+      if(b.dataset.choice===q.syllables) b.classList.add('correct');
+    });
+    setTimeout(()=>speak(q.word),400);
+    document.getElementById('statusMsg').textContent=`❌ ${q.syllables} — the right chop!`;
+    Tracker.record('syllable-chop',q.word,false,_firstTry,Date.now()-_qStart);
+    _firstTry=false;
+    soundWrong();
+  }
+  setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);
+}
+
+// ── Navigation ──
+function nextQ(){qi++;if(qi>=questions.length)showDone();else showQ();}
+
+function showDone(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='block';
+  document.getElementById('progressFill').style.width='100%';
+  const total=questions.length,pct=Math.round(score/total/10*100);
+  document.getElementById('doneScore').textContent=`You scored ${score} out of ${total*10} points (${pct}%)!`;
+  document.getElementById('doneLevel').textContent=`Level: ${SETTINGS[difficulty].label}`;
+  let title;
+  if(pct===100) title='🥋 Black Belt! 🏆';
+  else if(pct>=80) title='🥋 Karate Champion!';
+  else if(pct>=60) title='👊 Strong Kick! 🎉';
+  else title='💪 Keep Practising!';
+  document.getElementById('doneTitle').textContent=title;
+  soundWin();confetti();
+}
+
+function restart(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('pickScreen').style.display='block';
+  document.getElementById('subtitle').textContent='Karate chop each word at the right syllable break!';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('progressLabel').textContent='';
+}
+</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{});</script>
+</body>
+</html>

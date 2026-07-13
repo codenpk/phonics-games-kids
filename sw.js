@@ -2,7 +2,7 @@
 // Cache-first strategy: serve all static assets from cache; update in background.
 // Bump CACHE_VERSION when files change to force clients to refresh.
 
-const CACHE_VERSION = 'v12';
+const CACHE_VERSION = 'v13';
 const CACHE_NAME = `phonics-games-${CACHE_VERSION}`;
 
 const PRECACHE = [
@@ -69,6 +69,12 @@ const PRECACHE = [
   '/phonics-games-kids/data/farm-sound.js',
   '/phonics-games-kids/data/blend-or-not.js',
   '/phonics-games-kids/data/final-blend.js',
+  '/phonics-games-kids/games/vowel-team-memory.html',
+  '/phonics-games-kids/games/er-ir-ur.html',
+  '/phonics-games-kids/games/syllable-chop.html',
+  '/phonics-games-kids/data/vowel-team.js',
+  '/phonics-games-kids/data/er-ir-ur.js',
+  '/phonics-games-kids/data/syllable-chop.js',
 ];
 
 // ── Install: precache everything ─────────────────────────────────────────────

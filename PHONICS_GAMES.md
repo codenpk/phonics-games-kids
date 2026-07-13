@@ -2222,7 +2222,7 @@ Card: SHIP. Player: "SH — hmm… two letters but ONE sound — SINGLE!" ✓ (t
 
 ---
 
-## Game 40: Star, Bird, or Burn?
+## Game 40: Star, Bird, or Burn? ✅ BUILT
 **Theme:** ⭐ Space & Nature | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Three-way sort of r-controlled vowels focusing on the tricky ER/IR/UR distinction — spelling pattern over sound.
 **Skills:** ER/IR/UR spelling pattern discrimination, r-controlled vowel spelling, visual pattern recognition
@@ -2494,7 +2494,7 @@ Highlighted: farmer (AR), worked (OR? — no, ER), hard (AR), her (ER), farm (AR
 
 ---
 
-## Game 45: Vowel Team Memory
+## Game 45: Vowel Team Memory ✅ BUILT
 **Theme:** 🧩 Puzzle | **Age:** 6–8 | **Level:** Advanced
 **Objective:** Match vowel team word cards to their picture pairs — memory game targeting AI/AY, EE/EA, OA/OW(=/əʊ/) vowel teams.
 **Skills:** Vowel team recognition (AI, AY, EE, EA, OA, OW=/əʊ/), word reading, visual memory, pattern recognition
@@ -2988,7 +2988,7 @@ Set: SHIP, TIP, CAT, DIP. Odd one out: CAT.
 
 ---
 
-## Game 54: Syllable Chop
+## Game 54: Syllable Chop ✅ BUILT
 **Theme:** 🥋 Karate | **Age:** 5–7 | **Level:** Intermediate
 **Objective:** "Chop" a word into its syllables by sliding letter cards apart — visual and kinaesthetic syllabification.
 **Skills:** Syllable division, word structure awareness, reading multi-syllable words, fine motor

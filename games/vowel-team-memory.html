@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Vowel Team Memory</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
+      background:linear-gradient(135deg,#faf5ff 0%,#c084fc 50%,#7c3aed 100%);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 10px 30px}
+    .top-bar{width:100%;max-width:620px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .back-link{background:rgba(255,255,255,.85);border:none;border-radius:20px;padding:6px 14px;
+      font-family:inherit;font-size:.85rem;font-weight:bold;color:#4c1d95;cursor:pointer;text-decoration:none}
+    .score-area{display:flex;gap:8px;align-items:center}
+    .score-badge{background:rgba(255,255,255,.88);border-radius:14px;padding:6px 14px;
+      font-size:.85rem;font-weight:bold;color:#555}
+    .score-badge span{color:#7c3aed;font-size:1rem}
+    h1{font-size:1.5rem;color:#fff;text-shadow:2px 2px 0 #4c1d95;margin-bottom:4px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center;min-height:1.2em}
+
+    .card{background:rgba(255,255,255,.97);border-radius:22px;padding:22px 18px 20px;
+      box-shadow:0 8px 30px rgba(0,0,0,.13);width:100%;max-width:620px}
+
+    /* ── PICK SCREEN ───────────────────────────────────────────────────── */
+    #pickScreen{text-align:center}
+    .game-emoji{font-size:4rem;margin-bottom:10px}
+    .game-desc{font-size:.92rem;color:#374151;margin-bottom:14px}
+    .game-info{background:rgba(0,0,0,.05);border-radius:14px;padding:14px 16px;margin-bottom:18px;text-align:left}
+    .game-info-row{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;color:#374151;line-height:1.45;margin-bottom:8px}
+    .game-info-row:last-child{margin-bottom:0}
+    .pick-btns{display:flex;flex-direction:column;gap:12px}
+    .pick-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:inherit;
+      font-size:.95rem;font-weight:bold;transition:transform .12s;text-align:left}
+    .pick-btn:hover{transform:translateY(-2px)}
+    .pick-btn:active{transform:translateY(2px)}
+    .btn-easy  {background:linear-gradient(135deg,#d1fae5,#6ee7b7);color:#065f46;box-shadow:0 5px 0 #047857}
+    .btn-medium{background:linear-gradient(135deg,#ede9fe,#a78bfa);color:#4c1d95;box-shadow:0 5px 0 #6d28d9}
+    .btn-hard  {background:linear-gradient(135deg,#fce7f3,#f9a8d4);color:#831843;box-shadow:0 5px 0 #be185d}
+
+    /* ── GAME AREA ─────────────────────────────────────────────────────── */
+    #gameCard{display:none;text-align:center}
+    .stats-row{display:flex;justify-content:center;gap:14px;margin-bottom:12px}
+    .stat-box{background:linear-gradient(135deg,#ede9fe,#c4b5fd);border-radius:12px;
+      padding:6px 16px;font-size:.85rem;font-weight:bold;color:#4c1d95;min-width:90px}
+    .stat-box .val{font-size:1.2rem;display:block}
+
+    .card-grid{display:grid;gap:8px;margin:0 auto 12px}
+    .card-cell{perspective:600px;cursor:pointer}
+    .card-inner{position:relative;width:100%;padding-bottom:130%;
+      transform-style:preserve-3d;transition:transform .4s}
+    .card-cell.flipped .card-inner{transform:rotateY(180deg)}
+    .card-face{position:absolute;inset:0;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;font-family:inherit}
+    .card-back{background:linear-gradient(135deg,#7c3aed,#4c1d95);
+      color:#fff;font-size:1.5rem;backface-visibility:hidden}
+    .card-front{transform:rotateY(180deg);backface-visibility:hidden;font-weight:bold}
+    .card-front.word-card{background:#fff;color:#1f2937;font-size:.9rem;letter-spacing:2px;
+      border:2px solid #c4b5fd;text-align:center;padding:4px}
+    .card-front.pic-card{background:#f5f3ff;font-size:2.2rem}
+    .card-cell.matched .card-inner{border:3px solid #22c55e;border-radius:12px}
+    .card-cell.matched .card-front.word-card{background:#f0fdf4}
+    .card-cell.matched .card-front.pic-card{background:#f0fdf4}
+
+    .status-msg{min-height:1.6em;font-size:.92rem;font-weight:bold;color:#7c3aed;
+      margin-bottom:8px;text-align:center}
+
+    /* ── DONE SCREEN ───────────────────────────────────────────────────── */
+    .done-screen{display:none;text-align:center}
+    .done-emoji{font-size:4.5rem;display:block;margin-bottom:12px}
+    .done-title{font-size:1.9rem;color:#4c1d95;font-weight:bold;margin-bottom:8px}
+    .done-stat{font-size:1rem;color:#374151;margin-bottom:4px}
+    .done-rating{font-size:1.05rem;font-weight:bold;color:#7c3aed;margin:10px 0 20px}
+    .btn-again{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;
+      border-radius:14px;padding:12px 30px;font-family:inherit;font-size:1rem;font-weight:bold;
+      cursor:pointer;box-shadow:0 5px 0 #3b0764;transition:all .15s}
+    .btn-again:hover{transform:translateY(-2px)}
+    .btn-again:active{transform:translateY(3px);box-shadow:0 2px 0 #3b0764}
+
+    .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
+    .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="../launcher.html">← All Games</a>
+  <div class="score-area">
+    <div class="score-badge">⭐ <span id="score">0</span> pts</div>
+    <div class="score-badge">🔄 <span id="flips">0</span> flips</div>
+  </div>
+</div>
+<h1>🧩 Vowel Team Memory</h1>
+<p class="subtitle" id="subtitle">Flip cards to match words to pictures!</p>
+
+<!-- PICK SCREEN -->
+<div class="card" id="pickScreen">
+  <div class="game-emoji">🧩</div>
+  <h1 style="color:#4c1d95;text-shadow:none;font-size:1.4rem;margin-bottom:6px">Vowel Team Memory</h1>
+  <p class="game-desc">Flip cards to match each word to its picture!</p>
+  <div class="game-info">
+    <div class="game-info-row">🎮 <b>Vowel teams:</b> When two vowels work together to make one sound — RAIN, TREE, BOAT</div>
+    <div class="game-info-row">🔍 <b>How:</b> Tap two cards — if the word matches the picture, it's a match!</div>
+  </div>
+  <div class="pick-btns">
+    <button class="pick-btn btn-easy"   onclick="startGame('easy')">⭐ Easy — AI + EE (6 pairs)</button>
+    <button class="pick-btn btn-medium" onclick="startGame('medium')">⭐⭐ Medium — 4 teams (8 pairs)</button>
+    <button class="pick-btn btn-hard"   onclick="startGame('hard')">⭐⭐⭐ Hard — All 6 teams (10 pairs)</button>
+  </div>
+</div>
+
+<!-- GAME CARD -->
+<div class="card" id="gameCard">
+  <div class="stats-row">
+    <div class="stat-box">Pairs <span class="val" id="pairsLeft">0/0</span></div>
+    <div class="stat-box">Score <span class="val" id="scoreInGame">0</span></div>
+    <div class="stat-box">Flips <span class="val" id="flipsInGame">0</span></div>
+  </div>
+  <div class="card-grid" id="cardGrid"></div>
+  <div class="status-msg" id="statusMsg"></div>
+</div>
+
+<!-- DONE SCREEN -->
+<div class="card done-screen" id="doneScreen">
+  <span class="done-emoji">🌟</span>
+  <div class="done-title">All Pairs Matched!</div>
+  <div class="done-stat" id="doneScore"></div>
+  <div class="done-stat" id="doneFlips"></div>
+  <div class="done-rating" id="doneRating"></div>
+  <button class="btn-again" onclick="restart()">Play Again 🔄</button>
+  <br><a class="back-link" style="margin-top:14px;display:inline-block" href="../launcher.html">← All Games</a>
+</div>
+
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<script src="../data/tracker.js"></script>
+<script src="../data/vowel-team.js"></script>
+<script>
+/* ── Audio ─────────────────────────────────────────────────────────────── */
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function getAC(){if(!ac&&AC)ac=new AC();return ac;}
+function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=t;o.frequency.value=f;const s=ctx.currentTime+del;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.start(s);o.stop(s+d);}catch(e){}}
+function soundCorrect(){playTone(880,'sine',.15,.2);playTone(1100,'sine',.15,.18,.1);}
+function soundWrong(){playTone(200,'sawtooth',.3,.12);}
+function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+
+/* ── TTS ────────────────────────────────────────────────────────────────── */
+function speak(text){
+  if(!text||!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text.toLowerCase());
+  u.rate=0.82;u.pitch=1.05;
+  window.speechSynthesis.speak(u);
+}
+
+/* ── Utilities ──────────────────────────────────────────────────────────── */
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+function confetti(){
+  const w=document.getElementById('confettiWrap');
+  w.innerHTML='';
+  const cols=['#7c3aed','#c084fc','#fbbf24','#22c55e','#f9a8d4','#60a5fa'];
+  for(let i=0;i<70;i++){
+    const p=document.createElement('div');
+    p.className='confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.5}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;
+    w.appendChild(p);
+  }
+  setTimeout(()=>w.innerHTML='',2500);
+}
+
+function showStatus(msg){
+  const el=document.getElementById('statusMsg');
+  el.textContent=msg;
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.textContent='',1800);
+}
+
+/* ── Settings ───────────────────────────────────────────────────────────── */
+const SETTINGS={
+  easy:  {tiers:[1],     pairs:6,  teams:['AI','EE'],                      label:'⭐ Easy'},
+  medium:{tiers:[1,2],   pairs:8,  teams:['AI','AY','EE','EA'],            label:'⭐⭐ Medium'},
+  hard:  {tiers:[1,2,3], pairs:10, teams:['AI','AY','EE','EA','OA','OW'],  label:'⭐⭐⭐ Hard'},
+};
+const COLS={easy:4, medium:4, hard:5};
+
+/* ── Game State ─────────────────────────────────────────────────────────── */
+let difficulty='easy', cards=[], flipped=[], lockBoard=false,
+    matchCount=0, flipCount=0, score=0, _qStart=0;
+
+/* ── Start Game ─────────────────────────────────────────────────────────── */
+function startGame(diff){
+  difficulty=diff;
+  const s=SETTINGS[diff];
+  const pool=window.VOWEL_TEAM.filter(q=>s.tiers.includes(q.tier)&&s.teams.includes(q.team));
+  const chosen=shuffle(pool).slice(0,s.pairs);
+
+  cards=[];
+  chosen.forEach((item,i)=>{
+    cards.push({id:i*2,   type:'word', word:item.word, emoji:item.emoji, team:item.team, matched:false});
+    cards.push({id:i*2+1, type:'pic',  word:item.word, emoji:item.emoji, team:item.team, matched:false});
+  });
+  cards=shuffle(cards);
+
+  flipCount=0; matchCount=0; score=0; _qStart=Date.now();
+  document.getElementById('score').textContent='0';
+  document.getElementById('flips').textContent='0';
+  document.getElementById('scoreInGame').textContent='0';
+  document.getElementById('flipsInGame').textContent='0';
+  document.getElementById('pairsLeft').textContent=`0/${s.pairs}`;
+
+  document.getElementById('pickScreen').style.display='none';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('subtitle').textContent=`${s.label} — match word to picture!`;
+
+  renderGrid();
+}
+
+/* ── Render Grid ────────────────────────────────────────────────────────── */
+function renderGrid(){
+  const grid=document.getElementById('cardGrid');
+  grid.innerHTML='';
+  const cols=COLS[difficulty];
+  grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  const maxW=difficulty==='hard'?'380px':'340px';
+  grid.style.maxWidth=`min(${maxW},100%)`;
+
+  cards.forEach(card=>{
+    const cell=document.createElement('div');
+    cell.className='card-cell';
+    cell.id=`card-${card.id}`;
+
+    const inner=document.createElement('div');
+    inner.className='card-inner';
+
+    const back=document.createElement('div');
+    back.className='card-face card-back';
+    back.textContent='?';
+
+    const front=document.createElement('div');
+    front.className=`card-face card-front ${card.type==='word'?'word-card':'pic-card'}`;
+    if(card.type==='word'){
+      front.textContent=card.word;
+    } else {
+      front.textContent=card.emoji;
+    }
+
+    inner.appendChild(back);
+    inner.appendChild(front);
+    cell.appendChild(inner);
+    cell.addEventListener('click',()=>flipCard(card,cell));
+    grid.appendChild(cell);
+  });
+}
+
+/* ── Flip Card ──────────────────────────────────────────────────────────── */
+function flipCard(cardObj, cellEl){
+  if(lockBoard||cardObj.matched||cellEl.classList.contains('flipped')) return;
+  cellEl.classList.add('flipped');
+  flipped.push({card:cardObj, el:cellEl});
+
+  // Speak word when a word card is flipped
+  if(cardObj.type==='word') speak(cardObj.word);
+
+  if(flipped.length===2){
+    flipCount++;
+    document.getElementById('flipsInGame').textContent=flipCount;
+    document.getElementById('flips').textContent=flipCount;
+    setTimeout(checkMatch, 300);
+  }
+}
+
+/* ── Check Match ────────────────────────────────────────────────────────── */
+function checkMatch(){
+  lockBoard=true;
+  const [{card:a, el:aEl},{card:b, el:bEl}]=flipped;
+
+  if(a.word===b.word && a.type!==b.type){
+    // MATCH
+    a.matched=b.matched=true;
+    matchCount++;
+    score+=10;
+    document.getElementById('scoreInGame').textContent=score;
+    document.getElementById('score').textContent=score;
+    document.getElementById('pairsLeft').textContent=`${matchCount}/${SETTINGS[difficulty].pairs}`;
+
+    aEl.classList.add('matched');
+    bEl.classList.add('matched');
+
+    soundCorrect();
+    speak(a.word);
+    showStatus(`✅ ${a.word} — ${a.team} team! 🌟`);
+
+    Tracker.record('vowel-team-memory', a.word, true, true, Date.now()-_qStart);
+    _qStart=Date.now();
+
+    flipped=[];
+    lockBoard=false;
+    if(matchCount===SETTINGS[difficulty].pairs) setTimeout(showDone, 600);
+  } else {
+    // NO MATCH
+    soundWrong();
+    setTimeout(()=>{
+      aEl.classList.remove('flipped');
+      bEl.classList.remove('flipped');
+      flipped=[];
+      lockBoard=false;
+    },1000);
+  }
+}
+
+/* ── Done Screen ────────────────────────────────────────────────────────── */
+function showDone(){
+  const pairs=SETTINGS[difficulty].pairs;
+  let rating;
+  if(flipCount<=pairs*2)       rating='Perfect Memory! 🏆';
+  else if(flipCount<=pairs*3)  rating='Great Memory! 🌟';
+  else                         rating='Good job! 🎉';
+
+  document.getElementById('doneScore').textContent=`Score: ${score} pts`;
+  document.getElementById('doneFlips').textContent=`Flips used: ${flipCount}`;
+  document.getElementById('doneRating').textContent=rating;
+
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='block';
+
+  soundWin();
+  confetti();
+}
+
+/* ── Restart ────────────────────────────────────────────────────────────── */
+function restart(){
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('pickScreen').style.display='block';
+  document.getElementById('subtitle').textContent='Flip cards to match words to pictures!';
+  document.getElementById('score').textContent='0';
+  document.getElementById('flips').textContent='0';
+  document.getElementById('statusMsg').textContent='';
+}
+</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{});</script>
+</body>
+</html>
