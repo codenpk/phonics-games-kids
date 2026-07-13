@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Blend or Not?</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
+      background:linear-gradient(135deg,#f0fdfa 0%,#5eead4 50%,#0d9488 100%);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 10px 30px}
+
+    /* ── Top bar ── */
+    .top-bar{width:100%;max-width:580px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .back-link{background:rgba(255,255,255,.85);border:none;border-radius:20px;padding:6px 14px;
+      font-family:inherit;font-size:.85rem;font-weight:bold;color:#134e4a;cursor:pointer;text-decoration:none}
+    .score-badge{background:rgba(255,255,255,.88);border-radius:14px;padding:6px 16px;
+      font-size:.88rem;font-weight:bold;color:#555}
+    .score-badge span{color:#0d9488;font-size:1.05rem}
+
+    /* ── Title / subtitle ── */
+    h1{font-size:1.55rem;color:#fff;text-shadow:2px 2px 0 #134e4a;margin-bottom:4px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center;min-height:1.2em}
+
+    /* ── Progress bar ── */
+    .progress-wrap{width:100%;max-width:580px;margin-bottom:12px}
+    .progress-track{height:9px;background:rgba(255,255,255,.35);border-radius:5px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#99f6e4,#0d9488);border-radius:5px;transition:width .4s ease;width:0%}
+    .progress-label{font-size:.7rem;color:rgba(255,255,255,.85);text-align:right;margin-top:2px}
+
+    /* ── Card ── */
+    .card{background:rgba(255,255,255,.97);border-radius:22px;padding:22px 18px 20px;
+      box-shadow:0 8px 30px rgba(0,0,0,.13);width:100%;max-width:580px}
+
+    /* ── Pick screen ── */
+    #pickScreen{text-align:center}
+    .game-emoji{font-size:3.5rem;margin-bottom:8px}
+    .game-title{font-size:1.6rem;font-weight:bold;color:#134e4a;margin-bottom:6px}
+    .game-desc{font-size:.9rem;color:#374151;margin-bottom:16px}
+    .game-info{background:rgba(0,0,0,.05);border-radius:14px;padding:14px 16px;margin-bottom:18px;text-align:left}
+    .game-info-row{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;color:#374151;line-height:1.45;margin-bottom:8px}
+    .game-info-row:last-child{margin-bottom:0}
+    .pick-heading{font-size:1rem;font-weight:bold;color:#134e4a;margin-bottom:14px}
+    .pick-btns{display:flex;flex-direction:column;gap:12px}
+    .pick-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:inherit;
+      display:flex;align-items:center;gap:14px;text-align:left;transition:transform .12s ease}
+    .pick-btn:hover{transform:translateY(-2px)}
+    .pick-btn:active{transform:translateY(2px)}
+    .pick-icon{font-size:1.8rem;line-height:1;flex-shrink:0}
+    .pick-info{flex:1}
+    .pick-name{font-size:1.05rem;font-weight:bold;display:block;margin-bottom:2px}
+    .pick-desc{font-size:.75rem;opacity:.8;display:block}
+    .btn-easy  {background:linear-gradient(135deg,#ccfbf1,#5eead4);color:#134e4a;box-shadow:0 5px 0 #0f766e}
+    .btn-medium{background:linear-gradient(135deg,#fef9c3,#fde047);color:#713f12;box-shadow:0 5px 0 #a16207}
+    .btn-hard  {background:linear-gradient(135deg,#fce7f3,#f9a8d4);color:#831843;box-shadow:0 5px 0 #be185d}
+
+    /* ── Game card ── */
+    .prompt{text-align:center;font-size:.8rem;font-weight:bold;color:#0d9488;
+      text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+
+    /* Word card */
+    .word-card{background:linear-gradient(135deg,#f0fdfa,#ccfbf1);border:2px solid #99f6e4;
+      border-radius:20px;padding:22px 16px 16px;text-align:center;margin-bottom:20px}
+    .stim-emoji{font-size:4rem;display:block;margin-bottom:10px;line-height:1}
+    .stim-word{font-size:2.8rem;font-weight:bold;color:#134e4a;letter-spacing:4px;margin-bottom:10px}
+    .speak-btn{background:rgba(13,148,136,.15);border:none;border-radius:50%;width:42px;height:42px;
+      font-size:1.2rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+      transition:transform .1s;vertical-align:middle}
+    .speak-btn:hover{transform:scale(1.15)}
+
+    /* Answer buttons */
+    .answer-btns{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+    .answer-btn{border:none;border-radius:18px;cursor:pointer;font-family:inherit;
+      padding:0 12px;height:88px;font-size:1.35rem;font-weight:bold;color:#fff;
+      min-width:130px;transition:all .15s ease;text-align:center;line-height:1.25;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+    .answer-btn:hover{transform:translateY(-3px)}
+    .answer-btn:active{transform:translateY(3px)}
+    .answer-btn:disabled{cursor:default;opacity:.7;transform:none}
+    .btn-blend {background:linear-gradient(135deg,#3b82f6,#1d4ed8);box-shadow:0 5px 0 #1e3a8a}
+    .btn-single{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 5px 0 #92400e}
+    .answer-btn.correct{outline:4px solid #fbbf24;animation:popIn .4s ease}
+    .answer-btn.wrong  {animation:shakeBtn .4s ease}
+    @keyframes popIn  {0%{transform:scale(.9)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+    @keyframes shakeBtn{0%,100%{transform:translateX(0)}25%,75%{transform:translateX(-8px)}50%{transform:translateX(8px)}}
+
+    /* Status + Next */
+    .status-msg{min-height:28px;text-align:center;font-size:.95rem;font-weight:bold;color:#0d9488;margin-bottom:12px;line-height:1.4}
+    .btn-next-wrap{text-align:center}
+    .btn-next{background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;border:none;
+      border-radius:14px;padding:12px 30px;font-family:inherit;font-size:1rem;font-weight:bold;
+      cursor:pointer;box-shadow:0 5px 0 #134e4a;transition:all .15s ease;display:none}
+    .btn-next:hover{transform:translateY(-2px)}
+    .btn-next:active{transform:translateY(3px);box-shadow:0 2px 0 #134e4a}
+
+    /* Done screen */
+    .done-screen{display:none;text-align:center}
+    .done-emoji{font-size:4.5rem;display:block;margin-bottom:14px}
+    .done-title{font-size:2rem;color:#134e4a;font-weight:bold;margin-bottom:8px}
+    .done-score{font-size:1.1rem;color:#555;margin-bottom:6px}
+    .done-level{font-size:.82rem;color:#6b7280;margin-bottom:20px}
+
+    /* Confetti */
+    .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
+    .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <a class="back-link" href="../launcher.html">← All Games</a>
+  <div class="score-badge">🔬 <span id="score">0</span> pts</div>
+</div>
+<h1>🔬 Blend or Not?</h1>
+<p class="subtitle" id="subtitle">Does this word start with a BLEND or a SINGLE sound?</p>
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel"></div>
+</div>
+
+<!-- ── PICK SCREEN ── -->
+<div class="card" id="pickScreen">
+  <div class="game-emoji">🔬</div>
+  <h2 class="game-title">Blend or Not?</h2>
+  <p class="game-desc">Does this word start with a BLEND or a SINGLE sound?</p>
+  <div class="game-info">
+    <div class="game-info-row">🔀 <b>Blend:</b> Two consonant sounds you say separately — FL, ST, BR (e.g. "fl-ag", "st-op")</div>
+    <div class="game-info-row">1️⃣ <b>Single:</b> One sound — even SH, CH, TH count as ONE sound (digraphs)!</div>
+  </div>
+  <div class="pick-heading">Choose your level</div>
+  <div class="pick-btns">
+    <button class="pick-btn btn-easy" onclick="startGame('easy')">
+      <span class="pick-icon">⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Easy</span>
+        <span class="pick-desc">Clear blends vs. singles — no digraphs</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-medium" onclick="startGame('medium')">
+      <span class="pick-icon">⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Medium</span>
+        <span class="pick-desc">Tricky digraphs (SH, CH, TH) added!</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-hard" onclick="startGame('hard')">
+      <span class="pick-icon">⭐⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Hard</span>
+        <span class="pick-desc">All blends + digraphs + rare clusters</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- ── GAME CARD ── -->
+<div class="card" id="gameCard" style="display:none">
+  <div class="prompt" id="gamePrompt">How does this word start?</div>
+  <div class="word-card">
+    <span class="stim-emoji" id="stimEmoji"></span>
+    <div class="stim-word" id="stimWord"></div>
+    <button class="speak-btn" aria-label="Hear word" onclick="speak(document.getElementById('stimWord').textContent)">🔊</button>
+  </div>
+  <div class="answer-btns">
+    <button class="answer-btn btn-blend"  id="btnBlend"  onclick="choose(this,true)"  aria-label="Blend — two sounds">🔀<br>BLEND</button>
+    <button class="answer-btn btn-single" id="btnSingle" onclick="choose(this,false)" aria-label="Single — one sound">1️⃣<br>SINGLE</button>
+  </div>
+  <div class="status-msg" id="statusMsg"></div>
+  <div class="btn-next-wrap">
+    <button class="btn-next" id="btnNext" onclick="nextQ()">Next ➡</button>
+  </div>
+</div>
+
+<!-- ── DONE SCREEN ── -->
+<div class="card done-screen" id="doneScreen">
+  <span class="done-emoji">🔬</span>
+  <div class="done-title" id="doneTitle">Amazing!</div>
+  <div class="done-score" id="doneScore"></div>
+  <div class="done-level" id="doneLevel"></div>
+  <button class="btn-next" style="display:inline-block" onclick="restart()">Play Again 🔄</button>
+  <br><a class="back-link" style="margin-top:14px;display:inline-block" href="../launcher.html">← All Games</a>
+</div>
+
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<script src="../data/tracker.js"></script>
+<script src="../data/blend-or-not.js"></script>
+<script>
+// ── Audio ──────────────────────────────────────────────────────────────────────
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function getAC(){if(!ac&&AC)ac=new AC();return ac;}
+function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=t;o.frequency.value=f;const s=ctx.currentTime+del;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.start(s);o.stop(s+d);}catch(e){}}
+function soundCorrect(){playTone(880,'sine',.15,.2);playTone(1100,'sine',.15,.18,.1);}
+function soundWrong(){playTone(200,'sawtooth',.3,.12);}
+function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+
+// ── TTS ────────────────────────────────────────────────────────────────────────
+function speak(text){
+  if(!text||!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text.toLowerCase());
+  u.rate=0.82;u.pitch=1.05;
+  window.speechSynthesis.speak(u);
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
+function confetti(){
+  const w=document.getElementById('confettiWrap');w.innerHTML='';
+  const cols=['#0d9488','#5eead4','#fbbf24','#3b82f6','#a855f7','#f59e0b'];
+  for(let i=0;i<70;i++){
+    const p=document.createElement('div');p.className='confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.9}s;animation-delay:${Math.random()*.45}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;
+    w.appendChild(p);
+  }
+  setTimeout(()=>w.innerHTML='',2400);
+}
+
+// ── Game settings ──────────────────────────────────────────────────────────────
+const SETTINGS={
+  easy:  {tiers:[1],     limit:14, label:'⭐ Easy'},
+  medium:{tiers:[1,2],   limit:20, label:'⭐⭐ Medium'},
+  hard:  {tiers:[1,2,3], limit:26, label:'⭐⭐⭐ Hard'},
+};
+
+// ── State ──────────────────────────────────────────────────────────────────────
+let difficulty='easy',questions=[],qi=0,score=0,_qStart=0,_firstTry=true;
+
+// DOM refs
+const pickScreen  = document.getElementById('pickScreen');
+const gameCard    = document.getElementById('gameCard');
+const doneScreen  = document.getElementById('doneScreen');
+const stimEmoji   = document.getElementById('stimEmoji');
+const stimWord    = document.getElementById('stimWord');
+const btnBlend    = document.getElementById('btnBlend');
+const btnSingle   = document.getElementById('btnSingle');
+const btnNext     = document.getElementById('btnNext');
+const statusMsg   = document.getElementById('statusMsg');
+const scoreEl     = document.getElementById('score');
+const progressFill= document.getElementById('progressFill');
+const progressLabel=document.getElementById('progressLabel');
+const subtitle    = document.getElementById('subtitle');
+
+// ── Start game ─────────────────────────────────────────────────────────────────
+function startGame(diff){
+  difficulty=diff;
+  const s=SETTINGS[diff];
+  const pool=window.BLEND_OR_NOT.filter(q=>s.tiers.includes(q.tier));
+  questions=shuffle(pool).slice(0,s.limit);
+  qi=0;score=0;
+  scoreEl.textContent='0';
+  pickScreen.style.display='none';
+  gameCard.style.display='block';
+  doneScreen.style.display='none';
+  subtitle.textContent=s.label+' — BLEND or SINGLE?';
+  showQ();
+}
+
+// ── Show question ──────────────────────────────────────────────────────────────
+function showQ(){
+  _qStart=Date.now();_firstTry=true;
+  const q=questions[qi];
+  progressFill.style.width=Math.round(qi/questions.length*100)+'%';
+  progressLabel.textContent=`Word ${qi+1} of ${questions.length}`;
+  stimEmoji.textContent=q.emoji;
+  stimWord.textContent=q.word;
+  statusMsg.textContent='';
+  btnNext.style.display='none';
+  btnBlend.disabled=false;
+  btnSingle.disabled=false;
+  btnBlend.className='answer-btn btn-blend';
+  btnSingle.className='answer-btn btn-single';
+  setTimeout(()=>speak(q.word),450);
+}
+
+// ── Choose answer ──────────────────────────────────────────────────────────────
+function choose(btn, userSaysBlend){
+  btnBlend.disabled=true;
+  btnSingle.disabled=true;
+  const q=questions[qi];
+  const correct=(userSaysBlend===q.blend);
+
+  if(correct){
+    btn.classList.add('correct');
+    score+=10;
+    scoreEl.textContent=score;
+    Tracker.record('blend-or-not',q.word,true,_firstTry,Date.now()-_qStart);
+    soundCorrect();
+    const msg=q.blend
+      ? `✅ ${q.start} = two sounds: it's a blend!`
+      : `✅ ${q.start} = one sound: it's a single!`;
+    statusMsg.textContent=msg;
+    // Auto-advance after a short pause so the feedback is visible
+    setTimeout(()=>nextQ(),1100);
+  }else{
+    btn.classList.add('wrong');
+    const otherBtn=userSaysBlend ? btnSingle : btnBlend;
+    otherBtn.classList.add('correct');
+    Tracker.record('blend-or-not',q.word,false,_firstTry,Date.now()-_qStart);
+    _firstTry=false;
+    soundWrong();
+    setTimeout(()=>speak(q.word),400);
+    const msg=q.blend
+      ? `❌ ${q.start} = two sounds — it IS a blend!`
+      : `❌ ${q.start} = ONE sound — it's a single!`;
+    statusMsg.textContent=msg;
+    setTimeout(()=>btnNext.style.display='inline-block',900);
+  }
+}
+
+// ── Next question ──────────────────────────────────────────────────────────────
+function nextQ(){
+  qi++;
+  if(qi>=questions.length) showDone();
+  else showQ();
+}
+
+// ── Done screen ────────────────────────────────────────────────────────────────
+function showDone(){
+  gameCard.style.display='none';
+  doneScreen.style.display='block';
+  progressFill.style.width='100%';
+  const total=questions.length;
+  const pct=Math.round(score/total/10*100);
+  document.getElementById('doneScore').textContent=`You scored ${score} out of ${total*10} points (${pct}%)!`;
+  document.getElementById('doneLevel').textContent=`Level: ${SETTINGS[difficulty].label}`;
+  document.getElementById('doneTitle').textContent=
+    pct>=90?'Amazing! 🌟':pct>=70?'Brilliant! 🎉':pct>=50?'Good job! 👍':'Keep practising! 💪';
+  soundWin();
+  confetti();
+}
+
+// ── Restart ────────────────────────────────────────────────────────────────────
+function restart(){
+  gameCard.style.display='none';
+  doneScreen.style.display='none';
+  pickScreen.style.display='block';
+  subtitle.textContent='Does this word start with a BLEND or a SINGLE sound?';
+  progressFill.style.width='0%';
+  progressLabel.textContent='';
+}
+</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{});</script>
+</body>
+</html>

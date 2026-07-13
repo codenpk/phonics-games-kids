@@ -357,7 +357,7 @@ Games progress from the simplest phonics concepts (letter recognition) to advanc
 
 ---
 
-## Game 7: Farm Sound Sort
+## Game 7: Farm Sound Sort ✅ BUILT
 **Theme:** 🐄 Farm | **Age:** 4–5 | **Level:** Beginner
 **Objective:** Sort picture cards by their beginning sound into the correct animal barn.
 **Skills:** Phoneme isolation (initial), sound categorisation, vocabulary, listening
@@ -1593,7 +1593,7 @@ Games progress from the simplest phonics concepts (letter recognition) to advanc
 
 ---
 
-## Game 29: Blend or Not?
+## Game 29: Blend or Not? ✅ BUILT
 **Theme:** 🔬 Science | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Decide quickly whether a word begins with a consonant blend or a single consonant — discrimination skill that prevents over-blending errors.
 **Skills:** Blend vs. single consonant discrimination, phonemic analysis, listening, quick decision-making
@@ -1766,7 +1766,7 @@ Card: SHIP. Player: "SH — hmm… two letters but ONE sound — SINGLE!" ✓ (t
 
 ---
 
-## Game 32: Final Blend Spotter
+## Game 32: Final Blend Spotter ✅ BUILT
 **Theme:** 🔎 Detective | **Age:** 6–7 | **Level:** Intermediate
 **Objective:** Identify and underline the final consonant blend in written words — end-blend awareness.
 **Skills:** Final blend recognition (-st, -nd, -mp, -lt, -sk, -nt, -ft, -lp, -lk, -nk), phoneme segmentation, spelling pattern awareness
