@@ -191,7 +191,7 @@ function showQ(){
   document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
   document.getElementById('wordEmoji').textContent=q.emoji;
   document.getElementById('wordText').textContent=q.word;
-  document.getElementById('tierTag').textContent=TIER_LABEL[q.tier??1];
+  document.getElementById('tierTag').textContent='';
   const splitEl=document.getElementById('wordSplit');
   splitEl.textContent='';
   splitEl.classList.remove('visible');
