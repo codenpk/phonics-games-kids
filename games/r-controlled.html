@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Bossy R</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
+      background:linear-gradient(135deg,#fef9c3 0%,#a3e635 40%,#65a30d 100%);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 10px 30px}
+    .top-bar{width:100%;max-width:560px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .back-link{background:rgba(255,255,255,.85);border:none;border-radius:20px;padding:6px 14px;
+      font-family:inherit;font-size:.85rem;font-weight:bold;color:#365314;cursor:pointer;text-decoration:none}
+    .score-badge{background:rgba(255,255,255,.88);border-radius:14px;padding:6px 16px;
+      font-size:.88rem;font-weight:bold;color:#555}
+    .score-badge span{color:#65a30d;font-size:1.05rem}
+    h1{font-size:1.55rem;color:#fff;text-shadow:2px 2px 0 #365314;margin-bottom:4px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.9);font-size:.82rem;margin-bottom:10px;text-align:center;min-height:1.2em}
+    .progress-wrap{width:100%;max-width:560px;margin-bottom:12px}
+    .progress-track{height:9px;background:rgba(255,255,255,.35);border-radius:5px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#d9f99d,#65a30d);border-radius:5px;transition:width .4s ease;width:0%}
+    .progress-label{font-size:.7rem;color:rgba(255,255,255,.85);text-align:right;margin-top:2px}
+    .card{background:rgba(255,255,255,.97);border-radius:22px;padding:22px 18px 20px;
+      box-shadow:0 8px 30px rgba(0,0,0,.13);width:100%;max-width:560px}
+
+    #pickScreen{text-align:center}
+    .pick-heading{font-size:1.1rem;font-weight:bold;color:#365314;margin-bottom:18px}
+    .pick-btns{display:flex;flex-direction:column;gap:12px}
+    .pick-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:inherit;
+      display:flex;align-items:center;gap:14px;text-align:left;transition:transform .12s ease}
+    .pick-btn:hover{transform:translateY(-2px)}
+    .pick-btn:active{transform:translateY(2px)}
+    .pick-icon{font-size:1.8rem;line-height:1;flex-shrink:0}
+    .pick-info{flex:1}
+    .pick-name{font-size:1.05rem;font-weight:bold;display:block;margin-bottom:2px}
+    .pick-desc{font-size:.75rem;opacity:.8;display:block}
+    .btn-easy{background:linear-gradient(135deg,#d1fae5,#6ee7b7);color:#065f46;box-shadow:0 5px 0 #047857}
+    .btn-medium{background:linear-gradient(135deg,#fef9c3,#fde047);color:#365314;box-shadow:0 5px 0 #4d7c0f}
+    .btn-hard{background:linear-gradient(135deg,#fce7f3,#f9a8d4);color:#831843;box-shadow:0 5px 0 #be185d}
+
+    .prompt{text-align:center;font-size:.8rem;font-weight:bold;color:#65a30d;
+      text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+    .stimulus{text-align:center;margin-bottom:18px}
+    .stim-emoji{font-size:4.5rem;display:block;line-height:1;margin-bottom:10px}
+    .word-display{font-size:2rem;font-weight:bold;color:#1f2937;letter-spacing:3px;line-height:1.3;display:block}
+    .word-display .rc{color:#65a30d;text-decoration:underline;text-decoration-thickness:3px}
+    .r-note{font-size:.82rem;color:#6b7280;margin-top:5px;display:block}
+
+    .pattern-btns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    .pat-btn{border:none;border-radius:14px;cursor:pointer;font-family:inherit;
+      padding:12px 22px;font-size:1.5rem;font-weight:bold;color:#fff;
+      transition:all .15s ease;min-width:78px;text-align:center}
+    .pat-btn:hover{transform:translateY(-3px)}
+    .pat-btn:active{transform:translateY(3px)}
+    .pat-btn:disabled{cursor:default;opacity:.7}
+    .pat-ar{background:linear-gradient(135deg,#f97316,#ea580c);box-shadow:0 5px 0 #9a3412}
+    .pat-er{background:linear-gradient(135deg,#eab308,#ca8a04);box-shadow:0 5px 0 #713f12}
+    .pat-ir{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 5px 0 #14532d}
+    .pat-or{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 5px 0 #1e3a8a}
+    .pat-ur{background:linear-gradient(135deg,#a855f7,#7c3aed);box-shadow:0 5px 0 #4c1d95}
+    .pat-btn.correct{outline:4px solid #16a34a;animation:popIn .4s ease}
+    .pat-btn.wrong{animation:shakeBtn .4s ease}
+    @keyframes popIn{0%{transform:scale(.6)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+    @keyframes shakeBtn{0%,100%{transform:translateX(0)}25%,75%{transform:translateX(-6px)}50%{transform:translateX(6px)}}
+
+    .status-msg{min-height:26px;text-align:center;font-size:.92rem;font-weight:bold;color:#65a30d;margin-bottom:12px}
+    .btn-next-wrap{text-align:center}
+    .btn-next{background:linear-gradient(135deg,#65a30d,#4d7c0f);color:#fff;border:none;
+      border-radius:14px;padding:12px 30px;font-family:inherit;font-size:1rem;font-weight:bold;
+      cursor:pointer;box-shadow:0 5px 0 #365314;transition:all .15s ease;display:none}
+    .btn-next:hover{transform:translateY(-2px)}
+    .btn-next:active{transform:translateY(3px);box-shadow:0 2px 0 #365314}
+
+    .done-screen{display:none;text-align:center}
+    .done-emoji{font-size:4.5rem;display:block;margin-bottom:14px}
+    .done-title{font-size:2rem;color:#365314;font-weight:bold;margin-bottom:8px}
+    .done-score{font-size:1.1rem;color:#555;margin-bottom:6px}
+    .done-level{font-size:.82rem;color:#6b7280;margin-bottom:20px}
+    .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
+    .confetti-piece{position:absolute;top:-20px;border-radius:2px;opacity:.85;animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <a class="back-link" href="../launcher.html">← All Games</a>
+  <div class="score-badge">🐻 <span id="score">0</span> pts</div>
+</div>
+<h1>🐻 Bossy R</h1>
+<p class="subtitle" id="subtitle">The R changes the vowel sound — spot the pattern!</p>
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel"></div>
+</div>
+
+<div class="card" id="pickScreen">
+  <div class="pick-heading">Choose your level</div>
+  <div class="pick-btns">
+    <button class="pick-btn btn-easy" onclick="startGame('easy')">
+      <span class="pick-icon">⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Easy</span>
+        <span class="pick-desc">AR and OR: STAR, CORN, CAR…</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-medium" onclick="startGame('medium')">
+      <span class="pick-icon">⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Medium</span>
+        <span class="pick-desc">Add ER and UR: FERN, TURTLE, BURN…</span>
+      </span>
+    </button>
+    <button class="pick-btn btn-hard" onclick="startGame('hard')">
+      <span class="pick-icon">⭐⭐⭐</span>
+      <span class="pick-info">
+        <span class="pick-name">Hard</span>
+        <span class="pick-desc">All 5 patterns including tricky IR!</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<div class="card" id="gameCard" style="display:none">
+  <div class="prompt">Which bossy-R pattern do you see?</div>
+  <div class="stimulus">
+    <span class="stim-emoji" id="stimEmoji"></span>
+    <span class="word-display" id="wordDisplay"></span>
+    <span class="r-note">The R is bossing the vowel! 💪</span>
+  </div>
+  <div class="pattern-btns" id="patBtns"></div>
+  <div class="status-msg" id="statusMsg"></div>
+  <div class="btn-next-wrap">
+    <button class="btn-next" id="btnNext" onclick="nextQ()">Next ➡</button>
+  </div>
+</div>
+
+<div class="card done-screen" id="doneScreen">
+  <span class="done-emoji">🐻</span>
+  <div class="done-title" id="doneTitle">Amazing!</div>
+  <div class="done-score" id="doneScore"></div>
+  <div class="done-level" id="doneLevel"></div>
+  <button class="btn-next" style="display:inline-block" onclick="restart()">Play Again 🔄</button>
+  <br><a class="back-link" style="margin-top:14px;display:inline-block" href="../launcher.html">← All Games</a>
+</div>
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<script src="../data/r-controlled.js"></script>
+<script>
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function getAC(){if(!ac&&AC)ac=new AC();return ac;}
+function playTone(f,t,d,v=.18,del=0){try{const ctx=getAC();if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=t;o.frequency.value=f;const s=ctx.currentTime+del;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.start(s);o.stop(s+d);}catch(e){}}
+function soundCorrect(){playTone(880,'sine',.15,.2);playTone(1100,'sine',.15,.18,.1);}
+function soundWrong(){playTone(200,'sawtooth',.3,.12);}
+function soundWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.25,.2,i*.12));}
+function confetti(){const w=document.getElementById('confettiWrap');w.innerHTML='';const cols=['#65a30d','#a3e635','#f97316','#3b82f6','#a855f7'];for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;width:${8+Math.random()*8}px;height:${10+Math.random()*10}px`;w.appendChild(p);}setTimeout(()=>w.innerHTML='',2200);}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+const SETTINGS={
+  easy:  {tiers:[1],     limit:12, patterns:['AR','OR'],             label:'⭐ Easy'},
+  medium:{tiers:[1,2],   limit:20, patterns:['AR','ER','OR','UR'],   label:'⭐⭐ Medium'},
+  hard:  {tiers:[1,2,3], limit:26, patterns:['AR','ER','IR','OR','UR'], label:'⭐⭐⭐ Hard'},
+};
+const PAT_CLASS={AR:'pat-ar',ER:'pat-er',IR:'pat-ir',OR:'pat-or',UR:'pat-ur'};
+
+let difficulty='easy',questions=[],qi=0,score=0,activePatterns=[];
+
+function highlightPattern(word,pattern){
+  const idx=word.indexOf(pattern);
+  if(idx<0)return word;
+  return word.slice(0,idx)+`<span class="rc">${pattern}</span>`+word.slice(idx+pattern.length);
+}
+
+function startGame(diff){
+  difficulty=diff;
+  const s=SETTINGS[diff];
+  activePatterns=s.patterns;
+  const pool=window.R_CONTROLLED.filter(q=>s.tiers.includes(q.tier??1)&&s.patterns.includes(q.pattern));
+  questions=shuffle(pool).slice(0,s.limit);
+  qi=0;score=0;
+  document.getElementById('score').textContent='0';
+  document.getElementById('pickScreen').style.display='none';
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('subtitle').textContent=`${s.label} — Find the bossy-R pattern!`;
+  showQ();
+}
+
+function showQ(){
+  const q=questions[qi];
+  document.getElementById('progressFill').style.width=Math.round(qi/questions.length*100)+'%';
+  document.getElementById('progressLabel').textContent=`Word ${qi+1} of ${questions.length}`;
+  document.getElementById('stimEmoji').textContent=q.emoji;
+  document.getElementById('wordDisplay').innerHTML=highlightPattern(q.word,q.pattern);
+  document.getElementById('statusMsg').textContent='';
+  document.getElementById('btnNext').style.display='none';
+
+  const btns=document.getElementById('patBtns');
+  btns.innerHTML='';
+  shuffle([...activePatterns]).forEach(pat=>{
+    const b=document.createElement('button');
+    b.className=`pat-btn ${PAT_CLASS[pat]}`;
+    b.textContent=pat;
+    b.id=`patb-${pat}`;
+    b.setAttribute('aria-label',pat);
+    b.onclick=()=>choose(b,pat,q);
+    btns.appendChild(b);
+  });
+}
+
+function choose(btn,pat,q){
+  document.querySelectorAll('.pat-btn').forEach(b=>b.disabled=true);
+  const correct=pat===q.pattern;
+  if(correct){
+    btn.classList.add('correct');
+    score+=10;
+    document.getElementById('score').textContent=score;
+    document.getElementById('statusMsg').textContent=`✅ ${q.word} has the ${q.pattern} pattern!`;
+    soundCorrect();
+  }else{
+    btn.classList.add('wrong');
+    const cb=document.getElementById(`patb-${q.pattern}`);
+    if(cb)cb.classList.add('correct');
+    document.getElementById('statusMsg').textContent=`❌ ${q.word} has ${q.pattern}, not ${pat}!`;
+    soundWrong();
+  }
+  setTimeout(()=>document.getElementById('btnNext').style.display='inline-block',900);
+}
+
+function nextQ(){qi++;if(qi>=questions.length)showDone();else showQ();}
+
+function showDone(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='block';
+  document.getElementById('progressFill').style.width='100%';
+  const total=questions.length,pct=Math.round(score/total/10*100);
+  document.getElementById('doneScore').textContent=`You scored ${score} out of ${total*10} points (${pct}%)!`;
+  document.getElementById('doneLevel').textContent=`Level: ${SETTINGS[difficulty].label}`;
+  document.getElementById('doneTitle').textContent=pct>=90?'Amazing! 🌟':pct>=70?'Brilliant! 🎉':pct>=50?'Good job! 👍':'Keep practising! 💪';
+  soundWin();confetti();
+}
+
+function restart(){
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('doneScreen').style.display='none';
+  document.getElementById('pickScreen').style.display='block';
+  document.getElementById('subtitle').textContent='The R changes the vowel sound — spot the pattern!';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('progressLabel').textContent='';
+}
+</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{});</script>
+</body>
+</html>
